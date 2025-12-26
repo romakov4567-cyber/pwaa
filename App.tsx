@@ -54,12 +54,17 @@ const App: React.FC = () => {
   // Initialize Auth
   useEffect(() => {
     // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+          console.error('Error restoring session:', error);
+      }
       if (session?.user) {
         setUser(session.user);
         setIsAuthenticated(true);
         loadUserData(session.user.id);
       }
+    }).catch(err => {
+        console.error('Unexpected error during session restore:', err);
     });
 
     // Listen for auth changes
@@ -114,25 +119,34 @@ const App: React.FC = () => {
       if (user && isAuthenticated) {
           setSaveStatus('saving');
           const timer = setTimeout(async () => {
-              // Now saving to explicit columns for better database readability
-              const payload = {
-                  user_id: user.id,
-                  email: user.email, // Save email to DB so it's visible in table
-                  full_name: user.user_metadata?.full_name || '', // Save name to DB
-                  balance: balance,
-                  pwas: rows,
-                  invoices: invoices
-              };
-              
-              const { error } = await supabase
-                  .from('drumsky')
-                  .upsert(payload, { onConflict: 'user_id' });
+              try {
+                  // Now saving to explicit columns for better database readability
+                  const payload = {
+                      user_id: user.id,
+                      email: user.email, // Save email to DB so it's visible in table
+                      full_name: user.user_metadata?.full_name || '', // Save name to DB
+                      balance: balance,
+                      pwas: rows,
+                      invoices: invoices
+                  };
+                  
+                  const { error } = await supabase
+                      .from('drumsky')
+                      .upsert(payload, { onConflict: 'user_id' });
 
-              if (error) {
-                  console.error('Error saving data to Supabase:', JSON.stringify(error, null, 2));
+                  if (error) {
+                      console.error('Error saving data to Supabase:', error);
+                      // Fallback for logging Error objects which stringify to {}
+                      if (Object.keys(error).length === 0 && error.message) {
+                          console.error('Error message:', error.message);
+                      }
+                      setSaveStatus('error');
+                  } else {
+                      setSaveStatus('saved');
+                  }
+              } catch (err) {
+                  console.error('Unexpected error saving data:', err);
                   setSaveStatus('error');
-              } else {
-                  setSaveStatus('saved');
               }
           }, 1000); // 1s debounce
 
@@ -142,35 +156,44 @@ const App: React.FC = () => {
 
   const loadUserData = async (userId: string) => {
       setSaveStatus('saving');
-      // Select explicit columns
-      const { data, error } = await supabase
-          .from('drumsky')
-          .select('balance, pwas, invoices')
-          .eq('user_id', userId)
-          .single();
+      try {
+          // Select explicit columns
+          const { data, error } = await supabase
+              .from('drumsky')
+              .select('balance, pwas, invoices')
+              .eq('user_id', userId)
+              .single();
 
-      if (error) {
-          if (error.code !== 'PGRST116') { // Ignore "Row not found" error for new users
-             console.error('Error loading data:', error);
-             setSaveStatus('error');
-          } else {
-             setSaveStatus('saved'); // New user is technically "synced" as empty
+          if (error) {
+              if (error.code !== 'PGRST116') { // Ignore "Row not found" error for new users
+                 console.error('Error loading data:', error);
+                 setSaveStatus('error');
+              } else {
+                 setSaveStatus('saved'); // New user is technically "synced" as empty
+              }
+              // New user defaults
+              setRows([]);
+              setBalance(0);
+              setInvoices([]);
+          } else if (data) {
+              // Map columns to state
+              setRows(data.pwas || []);
+              setBalance(data.balance || 0);
+              setInvoices(data.invoices || []);
+              setSaveStatus('saved');
           }
-          // New user defaults
-          setRows([]);
-          setBalance(0);
-          setInvoices([]);
-      } else if (data) {
-          // Map columns to state
-          setRows(data.pwas || []);
-          setBalance(data.balance || 0);
-          setInvoices(data.invoices || []);
-          setSaveStatus('saved');
+      } catch (err) {
+          console.error('Unexpected error loading data:', err);
+          setSaveStatus('error');
       }
   };
 
   const handleLogout = async () => {
-      await supabase.auth.signOut();
+      try {
+          await supabase.auth.signOut();
+      } catch (e) {
+          console.error('Error signing out:', e);
+      }
       setIsAuthenticated(false);
       setUser(null);
       setIsProfileMenuOpen(false);

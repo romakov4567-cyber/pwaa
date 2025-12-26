@@ -32,7 +32,7 @@ export interface PwaRow {
   domain?: string;
   geo?: string;
   iconColor?: string;
-  iconText?: any;
+  iconText?: string;
   
   // Editor Data Fields
   developer?: string;
