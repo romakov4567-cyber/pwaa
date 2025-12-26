@@ -32,10 +32,31 @@ export interface PwaRow {
   domain?: string;
   geo?: string;
   iconColor?: string;
-  iconText?: React.ReactNode;
-  // Added for editor state
-  language?: string; // name
-  languageCode?: string; // code (en, az, ru)
+  iconText?: any; // Changed from React.ReactNode to any to avoid persistence issues, usually string or component
+  
+  // Editor Data Fields
+  developer?: string;
+  category?: string;
+  description?: string;
+  rating?: number;
+  ratingDistribution?: number[];
+  reviewsCount?: string;
+  downloads?: string;
+  size?: string;
+  age?: string;
+  iconUrl?: string;
+  screenshots?: string[];
+  videoUrl?: string;
+  tags?: string[];
+  comments?: any[];
+  keepReviewDatesCurrent?: boolean;
+  offerLink?: string;
+  passGetParams?: boolean;
+  geoCloaking?: 'all' | 'specific';
+  androidOnly?: boolean;
+  enableWhitepage?: boolean;
+  language?: string;
+  languageCode?: string;
 }
 
 export interface Invoice {

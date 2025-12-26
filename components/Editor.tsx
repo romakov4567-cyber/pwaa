@@ -5,12 +5,13 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle } from 'lucide-react';
+import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
 interface EditorProps {
     onBack: () => void;
+    onSave: (data: PwaRow) => void;
     lang: Language;
     initialData?: PwaRow | null;
 }
@@ -147,8 +148,9 @@ const defaultData = {
       languageCode: 'en'
 };
 
-export const Editor: React.FC<EditorProps> = ({ onBack, lang, initialData }) => {
+export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
   const [activeTab, setActiveTab] = useState('design');
+  const [saveBtnState, setSaveBtnState] = useState<'idle' | 'saved'>('idle');
   
   // State for the comment being edited
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -168,7 +170,8 @@ export const Editor: React.FC<EditorProps> = ({ onBack, lang, initialData }) => 
       }
       return {
           ...defaultData,
-          name: initialData?.name || defaultData.name,
+          ...initialData, // Load all initial data if exists
+          name: initialData?.name || defaultData.name, // Ensure name is present
       };
   });
 
@@ -186,9 +189,23 @@ export const Editor: React.FC<EditorProps> = ({ onBack, lang, initialData }) => 
       return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleSave = () => {
+      if (!initialData) return;
+      
+      const updatedRow: PwaRow = {
+          ...initialData,
+          ...appData,
+          isApp: true, // Mark as configured app
+      };
+      onSave(updatedRow);
+      
+      setSaveBtnState('saved');
+      setTimeout(() => setSaveBtnState('idle'), 2000);
+  };
+
   const t = {
     ru: {
-        launch: "Запустить", preview: "Предпросмотр", save: "Сохранить",
+        launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
         tabs: { domain: "Домен", tracker: "Трекер", design: "Оформление", analytics: "Аналитика", push: "Push-уведомления", extra: "Дополнительно" },
         stopped: "Остановлен",
         draft: "Черновик",
@@ -280,7 +297,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, lang, initialData }) => 
         langs: { tr: "Турецкий", ru: "Русский", en: "Английский" }
     },
     en: {
-        launch: "Launch", preview: "Preview", save: "Save",
+        launch: "Launch", preview: "Preview", save: "Save", saved: "Saved",
         tabs: { domain: "Domain", tracker: "Tracker", design: "Design", analytics: "Analytics", push: "Push Notifications", extra: "Extra" },
         stopped: "Stopped",
         draft: "Draft",
@@ -751,8 +768,16 @@ export const Editor: React.FC<EditorProps> = ({ onBack, lang, initialData }) => 
               <button onClick={handlePreview} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                   <Eye size={16} /> {t.preview}
               </button>
-              <button className="bg-gray-100 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed">
-                  <Save size={16} /> {t.save}
+              <button 
+                onClick={handleSave} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all shadow-sm ${
+                    saveBtnState === 'saved' 
+                    ? 'bg-green-100 text-green-700 border border-green-200' 
+                    : 'bg-[#1F2937] text-white hover:bg-black'
+                }`}
+              >
+                  {saveBtnState === 'saved' ? <Check size={16} /> : <Save size={16} />} 
+                  {saveBtnState === 'saved' ? t.saved : t.save}
               </button>
           </div>
       </div>

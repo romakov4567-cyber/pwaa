@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -194,8 +195,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ rows, onCreate, onEdit, on
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-4">
                                     {row.isApp ? (
-                                        <div className={`w-10 h-10 rounded border border-transparent overflow-hidden shadow-sm relative ${row.iconColor} flex items-center justify-center shrink-0`}>
-                                            <span className="text-[8px] text-white font-bold text-center leading-tight">{row.iconText}</span>
+                                        <div className={`w-10 h-10 rounded border border-transparent overflow-hidden shadow-sm relative ${!row.iconUrl ? row.iconColor : ''} flex items-center justify-center shrink-0`}>
+                                            {row.iconUrl ? (
+                                                <img src={row.iconUrl} alt={row.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="text-[8px] text-white font-bold text-center leading-tight">{row.iconText}</span>
+                                            )}
                                         </div>
                                     ) : (
                                         <div className="w-10 h-10 bg-gray-100 rounded border border-gray-200"></div>

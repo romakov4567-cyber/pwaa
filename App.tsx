@@ -223,6 +223,13 @@ const App: React.FC = () => {
     setCurrentView('editor');
     updateUrl('editor');
   };
+  
+  const handleSavePwa = (updatedPwa: PwaRow) => {
+      setRows(prevRows => prevRows.map(row => 
+          row.id === updatedPwa.id ? updatedPwa : row
+      ));
+      setEditingPwa(updatedPwa);
+  };
 
   const handleDeletePwa = (idToDelete: string) => {
       setRows(currentRows => currentRows.filter(row => row.id !== idToDelete));
@@ -393,6 +400,7 @@ const App: React.FC = () => {
             {currentView === 'editor' && (
               <Editor 
                 onBack={() => handleNavigate('dashboard')} 
+                onSave={handleSavePwa}
                 lang={lang} 
                 initialData={editingPwa}
               />
