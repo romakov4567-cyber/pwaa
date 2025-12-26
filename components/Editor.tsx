@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -74,7 +75,7 @@ const sweetBananzaData = {
       age: '18+',
       iconColor: 'bg-purple-600',
       iconUrl: '',
-      screenshots: [],
+      screenshots: [] as string[],
       videoUrl: '',
       tags: ['Best choice', 'Secure payments', 'Roulette King', 'Blackjack Master', '24/7 support'],
       comments: [
@@ -131,10 +132,10 @@ const defaultData = {
       age: '3+',
       iconColor: 'bg-blue-500',
       iconUrl: '',
-      screenshots: [],
+      screenshots: [] as string[],
       videoUrl: '',
-      tags: [],
-      comments: [],
+      tags: [] as string[],
+      comments: [] as any[],
       keepReviewDatesCurrent: false,
       offerLink: '',
       passGetParams: false,
