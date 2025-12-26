@@ -225,7 +225,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       setTimeout(() => setSaveBtnState('idle'), 2000);
   };
 
-  const t = {
+  const translations = {
     ru: {
         launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
         tabs: { domain: "Домен", tracker: "Трекер", design: "Оформление", analytics: "Аналитика", push: "Push-уведомления", extra: "Дополнительно" },
@@ -360,8 +360,145 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             themeSub: "При включении, тема оформления (светлая/темная) будет подстраиваться под устройство пользователя"
         },
         langs: { tr: "Турецкий", ru: "Русский", en: "Английский" }
+    },
+    en: {
+        launch: "Launch", preview: "Preview", save: "Save", saved: "Saved",
+        tabs: { domain: "Domain", tracker: "Tracker", design: "Design", analytics: "Analytics", push: "Push Notifications", extra: "Extra" },
+        stopped: "Stopped",
+        draft: "Draft",
+        tracker: {
+            offer: {
+                title: "Offer and parameters",
+                desc: "Enter a link to the offer where PWA users should land. See how to set parameters in the offer link",
+                here: "here",
+                placeholder: "Offer Link",
+                macros: "Available macros:",
+                passGet: "Pass GET parameters to offer",
+                passGetSub: "When enabled, all GET parameters will be passed to the offer"
+            },
+            geo: {
+                title: "Geo Cloaking",
+                desc: "You can select one or several regions where PWA will work. Users from other countries will be sent to Whitepage. If Geo is selected, but Whitepage is not configured or disabled, users will see this placeholder",
+                noCloak: "Cloaking not needed. Allow all GEO",
+                specific: "Allow only specific GEO"
+            },
+            device: {
+                title: "Device Cloaking",
+                desc: "Traffic routing rules for different devices. If selected to send to Whitepage but it is not configured, users will see this placeholder",
+                android: "Android devices only",
+                androidSub: "When this option is enabled, PWA will work only for Android devices, and other traffic will be sent to Whitepage."
+            },
+            whitepage: {
+                title: "Whitepage",
+                desc: "Here you can configure the whitepage that will be displayed for inappropriate traffic",
+                enable: "Enable whitepage",
+                enableSub: "When enabled, all inappropriate traffic will be redirected to whitepage."
+            }
+        },
+        design: {
+            title: "Design Settings",
+            desc: "You can do everything yourself or copy the design of an existing application.",
+            copy: "Copy from Google Play",
+            manual: "Do it manually",
+            langCatTitle: "PWA Language and Category",
+            langCatDesc: "Select the main language in which all system labels on the PWA installation page will be displayed. The selected category will affect some labels on the installation page, as well as the style and theme when generating descriptions and comments.",
+            lang: "Language",
+            cat: "Category",
+            installTitle: "Installation Page Design",
+            installSub: "App Header",
+            upload: "Upload",
+            appName: "App Name",
+            dev: "Developer",
+            size: "Size",
+            age: "Age",
+            downloads: "Downloads",
+            mediaTitle: "Images and Video",
+            mediaSub: "Upload images and videos to display on the installation page",
+            videoInfo: "Video will always appear first in app screenshots",
+            descTitle: "Description and Tags",
+            descSub: "Good description and tags increase conversion. Do not neglect this.",
+            mainLang: "Main Language",
+            descLabel: "App Description",
+            tagsLabel: "Description Tags",
+            addTags: "Add Tags",
+            genDesc: "Generate description with ChatGPT",
+            randTags: "Pick random tags",
+            ratingsTitle: "Ratings and Reviews",
+            rating: "Rating",
+            reviewsCount: "Reviews Count",
+            commentsTitle: "Comments",
+            keepDates: "Keep review dates current",
+            keepDatesSub: "When enabled, review dates will always be current",
+            editComment: {
+                title: "Edit Review",
+                username: "Username",
+                date: "Date",
+                rating: "Rating",
+                likes: "Likes",
+                text: "Review Text",
+                devResponse: "Developer Response",
+                avatar: "Avatar",
+                uploadAvatar: "Upload Photo",
+                cancel: "Cancel",
+                save: "Save",
+                delete: "Delete",
+                genComment: "Generate comment",
+                genResponse: "Generate response"
+            },
+            process: {
+                title: "Setup Process",
+                domain: "Domain", offer: "Offer", cloak: "Geo Cloaking", white: "Whitepage", design: "Design", desc: "App Description", comments: "Comments", pixels: "Pixels",
+                status: { done: "Done", process: "In Progress", none: "Not Set" }
+            }
+        },
+        analytics: {
+            incoming: {
+                title: "Incoming Postbacks",
+                desc: "To display registrations and deposits in pwa.bot statistics, add postbacks to your affiliate network or tracker. See how to configure",
+                here: "here",
+                reg: "Postback for registrations",
+                dep: "Postback for deposits"
+            },
+            outgoing: {
+                title: "Outgoing Postbacks",
+                desc: "Here you can configure event transmission from pwa.bot to external systems.",
+                install: "Install",
+                open: "Open",
+                pushSub: "Push Subscription",
+                reg: "Registration",
+                dep: "Deposit",
+                method: "Method"
+            },
+            integrations: {
+                fb: "Integration with Facebook",
+                bigo: "Integration with Bigo Ads (Likee, imo)",
+                kwai: "Integration with KWAI Ads",
+                snapchat: "Integration with Snapchat Ads",
+                desc: "Read more about integration configuration",
+                addPixel: "Add pixel to install page",
+                addPixelDesc: "When enabled, the pixel will be placed on the PWA installation page",
+                addBtn: "Add Pixel"
+            }
+        },
+        push: {
+            title: "Push Notifications",
+            desc: "We don't know why this might be needed, but if you want, you can disable the request for permission to send PUSH notifications when installing PWA.",
+            collect: "Collect PUSH subscriptions",
+            collectSub: "When installing PWA, a system request for push notification permission will be shown."
+        },
+        extra: {
+            title: "Additional Settings",
+            desc: "Here is everything that didn't fit into other sections.",
+            richer: "Richer UI",
+            richerSub: "Beautiful system interface for displaying the application installation request.",
+            theme: "Automatic theme change",
+            themeSub: "When enabled, the theme (light/dark) will adapt to the user's device"
+        },
+        langs: { tr: "Turkish", ru: "Russian", en: "English" }
     }
-  }[lang];
+  };
+
+  const t = translations[lang];
 
   const handlePreview = () => {
     try {
@@ -1187,7 +1324,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                      </button>
                                  </div>
                              ))}
-                             {appData.screenshots.length < 6 && Array.from({ length: 6 - appData.screenshots.length }).map((_, i) => (
+                             {appData.screenshots.length < 6 && Array.from({ length: 6 - appData.screenshots.length }).map((_: unknown, i: number) => (
                                  <div 
                                     key={`add-${i}`} 
                                     onClick={handleAddScreenshotClick}
