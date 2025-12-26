@@ -18,10 +18,22 @@ import { supabase } from './supabaseClient';
 
 export type ViewState = 'dashboard' | 'editor' | 'analytics' | 'invoices';
 
+// Helper to determine view from URL path
+const getViewFromPath = (): ViewState => {
+  const path = window.location.pathname.toLowerCase();
+  if (path.startsWith('/analytics')) return 'analytics';
+  if (path.startsWith('/invoices')) return 'invoices';
+  if (path.startsWith('/editor')) return 'editor';
+  return 'dashboard';
+};
+
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [currentView, setCurrentView] = useState<ViewState>('dashboard');
+  
+  // Initialize currentView based on the current URL path
+  const [currentView, setCurrentView] = useState<ViewState>(getViewFromPath);
+  
   const [hash, setHash] = useState(window.location.hash);
   const [lang, setLang] = useState<Language>('ru');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -72,6 +84,12 @@ const App: React.FC = () => {
     };
     window.addEventListener('hashchange', handleHashChange);
     
+    // Handle Browser Back Button (Popstate)
+    const handlePopState = () => {
+        setCurrentView(getViewFromPath());
+    };
+    window.addEventListener('popstate', handlePopState);
+    
     // Close menus on click outside
     const handleClickOutside = (event: MouseEvent) => {
         if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
@@ -86,6 +104,7 @@ const App: React.FC = () => {
     return () => {
         subscription.unsubscribe();
         window.removeEventListener('hashchange', handleHashChange);
+        window.removeEventListener('popstate', handlePopState);
         document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -158,6 +177,9 @@ const App: React.FC = () => {
       setRows([]);
       setBalance(0);
       setInvoices([]);
+      // Reset URL to root on logout
+      window.history.pushState(null, '', '/');
+      setCurrentView('dashboard');
   };
 
   const handleCreateInvoice = (invoice: Invoice) => {
@@ -173,6 +195,21 @@ const App: React.FC = () => {
       setIsLangMenuOpen(false);
   };
   
+  // Helper to update URL
+  const updateUrl = (view: ViewState) => {
+      let path = '/';
+      if (view === 'analytics') path = '/analytics';
+      if (view === 'invoices') path = '/invoices';
+      if (view === 'editor') path = '/editor';
+      
+      window.history.pushState(null, '', path);
+  };
+
+  const handleNavigate = (view: ViewState) => {
+      setCurrentView(view);
+      updateUrl(view);
+  };
+  
   const handleCreatePwa = () => {
     const newDraft: PwaRow = {
         id: `row_${Date.now()}`,
@@ -184,6 +221,7 @@ const App: React.FC = () => {
     setRows(currentRows => [newDraft, ...currentRows]);
     setEditingPwa(newDraft);
     setCurrentView('editor');
+    updateUrl('editor');
   };
 
   const handleDeletePwa = (idToDelete: string) => {
@@ -193,10 +231,7 @@ const App: React.FC = () => {
   const handleEditPwa = (row: PwaRow) => {
       setEditingPwa(row);
       setCurrentView('editor');
-  };
-
-  const handleNavigate = (view: ViewState) => {
-      setCurrentView(view);
+      updateUrl('editor');
   };
 
   const flags = {
@@ -225,7 +260,12 @@ const App: React.FC = () => {
       <div className="flex items-center gap-4">
         {currentView === 'editor' && (
              <div className="text-sm text-pwa-muted flex items-center gap-2">
-                 <span className="cursor-pointer hover:text-pwa-green" onClick={() => setCurrentView('dashboard')}>{t[lang].myPwa}</span>
+                 <span 
+                    className="cursor-pointer hover:text-pwa-green" 
+                    onClick={() => handleNavigate('dashboard')}
+                 >
+                    {t[lang].myPwa}
+                 </span>
                  <span>/</span>
                  <span className="text-pwa-text font-medium">{editingPwa?.name || 'New Application'}</span>
              </div>
@@ -352,7 +392,7 @@ const App: React.FC = () => {
             )}
             {currentView === 'editor' && (
               <Editor 
-                onBack={() => setCurrentView('dashboard')} 
+                onBack={() => handleNavigate('dashboard')} 
                 lang={lang} 
                 initialData={editingPwa}
               />
