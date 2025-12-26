@@ -5,7 +5,7 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Bot } from 'lucide-react';
+import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Bot, Layers, ArrowRight } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
@@ -61,6 +61,14 @@ const CATEGORIES = [
     'Finance',
     'Dating',
     'Nutra'
+];
+
+const AVAILABLE_DOMAINS = [
+    'playpilot.sbs',
+    'winbig.app',
+    'lucky-spin.io',
+    'best-game.zone',
+    'app-store-mirror.net'
 ];
 
 const sweetBananzaData = {
@@ -170,8 +178,9 @@ const defaultData: Partial<PwaRow> = {
 };
 
 export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
-  const [activeTab, setActiveTab] = useState('design');
+  const [activeTab, setActiveTab] = useState('domain');
   const [saveBtnState, setSaveBtnState] = useState<'idle' | 'saved'>('idle');
+  const [domainMode, setDomainMode] = useState<'buy' | 'own'>('buy');
   
   // State for the comment being edited
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -225,12 +234,39 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       setTimeout(() => setSaveBtnState('idle'), 2000);
   };
 
+  const handleSaveAndContinue = () => {
+      handleSave();
+      const tabs = ['domain', 'tracker', 'design', 'analytics', 'push', 'extra'];
+      const currentIndex = tabs.indexOf(activeTab);
+      if (currentIndex < tabs.length - 1) {
+          setActiveTab(tabs[currentIndex + 1]);
+      }
+  };
+
   const translations = {
     ru: {
         launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
         tabs: { domain: "Домен", tracker: "Трекер", design: "Оформление", analytics: "Аналитика", push: "Push-уведомления", extra: "Дополнительно" },
         stopped: "Остановлен",
         draft: "Черновик",
+        domain: {
+            title: "Домен",
+            desc: "Для работы PWA необходим домен. Вы можете купить домен у нас или использовать свой.",
+            buyTitle: "Купить готовый домен",
+            ownTitle: "Использовать свой домен",
+            buyPrice: "$5",
+            ownPrice: "Бесплатно",
+            selectTitle: "Выберите понравившийся домен",
+            selectDesc: "Все домены уже настроены и работают. Ничего дополнительно настраивать не нужно.",
+            ownDomainTitle: "Введите ваш домен",
+            ownDomainDesc: "Вам нужно будет добавить A-запись в настройках DNS вашего регистратора.",
+            selectLabel: "Домен",
+            placeholder: "Выберите домен",
+            ownPlaceholder: "example.com",
+            buyBtn: "Купить домен",
+            checkBtn: "Проверить настройки",
+            saveContinue: "Сохранить и продолжить"
+        },
         tracker: {
             offer: {
                 title: "Оффер и параметры",
@@ -366,6 +402,24 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
         tabs: { domain: "Domain", tracker: "Tracker", design: "Design", analytics: "Analytics", push: "Push Notifications", extra: "Extra" },
         stopped: "Stopped",
         draft: "Draft",
+        domain: {
+            title: "Domain",
+            desc: "A domain is required for PWA to work. You can buy a domain from us or use your own.",
+            buyTitle: "Buy ready-made domain",
+            ownTitle: "Use your own domain",
+            buyPrice: "$5",
+            ownPrice: "Free",
+            selectTitle: "Select a domain",
+            selectDesc: "All domains are already configured and working. No additional configuration is needed.",
+            ownDomainTitle: "Enter your domain",
+            ownDomainDesc: "You will need to add an A-record in your registrar's DNS settings.",
+            selectLabel: "Domain",
+            placeholder: "Select domain",
+            ownPlaceholder: "example.com",
+            buyBtn: "Buy domain",
+            checkBtn: "Check settings",
+            saveContinue: "Save and continue"
+        },
         tracker: {
             offer: {
                 title: "Offer and parameters",
@@ -979,6 +1033,92 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Form Area */}
           <div className="flex-1 min-w-0 space-y-6">
+              
+              {/* Domain Tab Content */}
+              {activeTab === 'domain' && (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
+                      <h3 className="font-bold text-gray-800 mb-1">{t.domain.title}</h3>
+                      <p className="text-sm text-gray-400 mb-6">{t.domain.desc}</p>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                          <div 
+                              className={`border-2 rounded-xl p-6 cursor-pointer transition-all ${domainMode === 'buy' ? 'border-gray-900 bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}
+                              onClick={() => setDomainMode('buy')}
+                          >
+                              <Layers className="text-gray-900 mb-3" size={24} />
+                              <div className="font-bold text-gray-900 mb-1">{t.domain.buyTitle}</div>
+                              <div className="font-bold text-xl">{t.domain.buyPrice}</div>
+                          </div>
+                          
+                          <div 
+                              className={`border-2 rounded-xl p-6 cursor-pointer transition-all ${domainMode === 'own' ? 'border-gray-900 bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}
+                              onClick={() => setDomainMode('own')}
+                          >
+                              <Layers className="text-gray-900 mb-3" size={24} />
+                              <div className="font-bold text-gray-900 mb-1">{t.domain.ownTitle}</div>
+                              <div className="font-bold text-xl">{t.domain.ownPrice}</div>
+                          </div>
+                      </div>
+
+                      {domainMode === 'buy' ? (
+                          <>
+                              <h4 className="font-bold text-sm text-gray-800 mb-1">{t.domain.selectTitle}</h4>
+                              <p className="text-xs text-gray-400 mb-4">{t.domain.selectDesc}</p>
+                              
+                              <div className="mb-6 relative">
+                                  <label className="absolute -top-2 left-3 bg-white px-1 text-xs font-bold text-gray-500">{t.domain.selectLabel}</label>
+                                  <div className="relative">
+                                      <select 
+                                          className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm focus:outline-none focus:border-pwa-green appearance-none cursor-pointer"
+                                          value={appData.domain || ''}
+                                          onChange={(e) => setAppData({...appData, domain: e.target.value})}
+                                      >
+                                          <option value="" disabled>{t.domain.placeholder}</option>
+                                          {AVAILABLE_DOMAINS.map(d => (
+                                              <option key={d} value={d}>{d}</option>
+                                          ))}
+                                      </select>
+                                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                                  </div>
+                              </div>
+
+                              <button className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                                  {t.domain.buyBtn}
+                              </button>
+                          </>
+                      ) : (
+                          <>
+                              <h4 className="font-bold text-sm text-gray-800 mb-1">{t.domain.ownDomainTitle}</h4>
+                              <p className="text-xs text-gray-400 mb-4">{t.domain.ownDomainDesc}</p>
+                              
+                              <div className="mb-6 relative">
+                                  <label className="absolute -top-2 left-3 bg-white px-1 text-xs font-bold text-gray-500">{t.domain.selectLabel}</label>
+                                  <input 
+                                      type="text"
+                                      className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm focus:outline-none focus:border-pwa-green"
+                                      placeholder={t.domain.ownPlaceholder}
+                                      value={appData.domain || ''}
+                                      onChange={(e) => setAppData({...appData, domain: e.target.value})}
+                                  />
+                              </div>
+
+                              <button className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                                  {t.domain.checkBtn}
+                              </button>
+                          </>
+                      )}
+
+                      <div className="mt-12 flex justify-end">
+                          <button 
+                              onClick={handleSaveAndContinue}
+                              className="bg-[#1F2937] hover:bg-black text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-gray-200 flex items-center gap-2 transition-all"
+                          >
+                              {t.domain.saveContinue}
+                              <ArrowRight size={16} />
+                          </button>
+                      </div>
+                  </div>
+              )}
               
               {/* Tracker Content */}
               {activeTab === 'tracker' && (
@@ -1708,7 +1848,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
               )}
               
               {/* Placeholder for tabs that might not be fully implemented yet if any */}
-              {activeTab !== 'design' && activeTab !== 'tracker' && activeTab !== 'analytics' && activeTab !== 'push' && activeTab !== 'extra' && (
+              {activeTab !== 'design' && activeTab !== 'tracker' && activeTab !== 'analytics' && activeTab !== 'push' && activeTab !== 'extra' && activeTab !== 'domain' && (
                   <div className="bg-white p-12 rounded-xl border border-gray-200 shadow-sm text-center text-gray-500 animate-in fade-in duration-300">
                       <Settings className="mx-auto mb-4 text-gray-300 animate-spin-slow" size={48} />
                       <p>Content for {activeTab} tab would go here.</p>
@@ -1723,7 +1863,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
               {/* Progress Checklist */}
               <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                   <h3 className="font-bold text-gray-800 mb-4">{t.design.process.title}</h3>
-                  <ProgressItem label={t.design.process.domain} status="done" />
+                  <ProgressItem label={t.design.process.domain} status={appData.domain ? "done" : "process"} />
                   <ProgressItem label={t.design.process.offer} status={appData.offerLink ? "done" : "none"} />
                   <ProgressItem label={t.design.process.cloak} status={appData.geoCloaking === 'specific' ? "done" : "none"} />
                   <ProgressItem label={t.design.process.white} status={appData.enableWhitepage ? "done" : "none"} />
