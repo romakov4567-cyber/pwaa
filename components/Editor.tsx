@@ -5,7 +5,7 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check } from 'lucide-react';
+import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Bot } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
@@ -1506,7 +1506,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                          <div className="mt-3 bg-gray-50 border-l-2 border-pwa-green p-3 rounded-r-lg">
                                              <div className="flex items-center gap-2 mb-1.5">
                                                  <div className="w-5 h-5 rounded-full bg-pwa-green flex items-center justify-center text-white shrink-0">
-                                                     <Bot size={12} />
+                                                     <DevBotIcon size={12} />
                                                  </div>
                                                  <span className="text-[10px] font-bold text-gray-800 uppercase tracking-wider">{t.design.editComment.devResponse}</span>
                                              </div>
@@ -1751,7 +1751,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 };
 
 // Simple Bot icon for developer response
-const Bot = ({ size }: { size: number }) => (
+const DevBotIcon = ({ size }: { size: number }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="11" width="18" height="10" rx="2" />
         <circle cx="12" cy="5" r="2" />
