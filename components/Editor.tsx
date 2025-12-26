@@ -112,15 +112,17 @@ const sweetBananzaData = {
       keepReviewDatesCurrent: false,
       offerLink: 'https://example-offer.com?click_id={user_id}',
       passGetParams: true,
-      // Fix: widen type to 'all' | 'specific' to avoid unintentional comparison errors in TypeScript
       geoCloaking: 'all' as 'all' | 'specific',
       androidOnly: true,
       enableWhitepage: false,
       language: 'Турецкий',
-      languageCode: 'tr'
+      languageCode: 'tr',
+      push_ask_permission: true,
+      extra_richer_ui: true,
+      extra_auto_theme: false
 };
 
-const defaultData = {
+const defaultData: Partial<PwaRow> = {
       name: 'New Application',
       developer: 'Developer Name',
       category: 'Utility',
@@ -140,12 +142,31 @@ const defaultData = {
       keepReviewDatesCurrent: false,
       offerLink: '',
       passGetParams: false,
-      // Fix: widen type to 'all' | 'specific' to avoid unintentional comparison errors in TypeScript
       geoCloaking: 'all' as 'all' | 'specific',
       androidOnly: false,
       enableWhitepage: false,
       language: 'Английский',
-      languageCode: 'en'
+      languageCode: 'en',
+      
+      // Default Analytics
+      postback_install_method: 'GET',
+      postback_open_method: 'GET',
+      postback_push_sub_method: 'GET',
+      postback_reg_method: 'GET',
+      postback_dep_method: 'GET',
+      
+      // Default Pixels
+      pixel_fb_enabled: false,
+      pixel_bigo_enabled: false,
+      pixel_kwai_enabled: false,
+      pixel_snapchat_enabled: false,
+
+      // Default Push
+      push_ask_permission: true,
+
+      // Default Extra
+      extra_richer_ui: false,
+      extra_auto_theme: false
 };
 
 export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
@@ -161,10 +182,11 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   const [langSearchQuery, setLangSearchQuery] = useState('');
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
-  const [appData, setAppData] = useState(() => {
+  const [appData, setAppData] = useState<any>(() => {
       // Logic to determine if we load the full mock data or a blank slate
       if (initialData?.id === 'row3' || initialData?.name === 'Sweet Bananza LC') {
           return {
+              ...defaultData, // Ensure defaults for new fields are present
               ...sweetBananzaData,
           };
       }
@@ -294,6 +316,49 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                 status: { done: "Готово", process: "В процессе", none: "Не настроено" }
             }
         },
+        analytics: {
+            incoming: {
+                title: "Входящие постбеки",
+                desc: "Чтобы в статистике pwa.bot отображались регистрации и депозиты, добавьте постбеки в свою партнерку или трекер. Как настроить смотрите",
+                here: "здесь",
+                reg: "Постбек для регистраций",
+                dep: "Постбек для депозитов"
+            },
+            outgoing: {
+                title: "Исходящие постбеки",
+                desc: "Здесь можно настроить передачу событий из pwa.bot во внешние системы.",
+                install: "Инсталл",
+                open: "Открытие",
+                pushSub: "Подписка на Push",
+                reg: "Регистрация",
+                dep: "Депозит",
+                method: "Method"
+            },
+            integrations: {
+                fb: "Интеграция с Facebook",
+                bigo: "Интеграция с Bigo Ads (Likee, imo)",
+                kwai: "Интеграция с KWAI Ads",
+                snapchat: "Интеграция со Snapchat Ads",
+                desc: "Подробнее о настройке интеграции можно прочитать",
+                addPixel: "Добавить пиксель",
+                addPixelDesc: "При включении, пиксель будет размещен на странице установки PWA",
+                addBtn: "Добавить пиксель"
+            }
+        },
+        push: {
+            title: "Push уведомления",
+            desc: "Мы не знаем зачем это может понадобиться, но, если хотите, можете отключить запрос разрешения на отправку PUSH уведомлений при установке PWA.",
+            collect: "Собирать PUSH подписки",
+            collectSub: "При установке PWA будет показан системный запрос на разрешение push уведомлений."
+        },
+        extra: {
+            title: "Дополнительные настройки",
+            desc: "Здесь все, что не поместилось в другие разделы.",
+            richer: "Richer UI",
+            richerSub: "Красивый системный интерфейс для отображения запроса на установку приложения.",
+            theme: "Автоматическая смена темы",
+            themeSub: "При включении, тема оформления (светлая/темная) будет подстраиваться под устройство пользователя"
+        },
         langs: { tr: "Турецкий", ru: "Русский", en: "Английский" }
     },
     en: {
@@ -386,6 +451,49 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                 status: { done: "Done", process: "In Progress", none: "Not Set" }
             }
         },
+        analytics: {
+            incoming: {
+                title: "Incoming Postbacks",
+                desc: "To display registrations and deposits in pwa.bot statistics, add postbacks to your affiliate network or tracker. See how to configure",
+                here: "here",
+                reg: "Postback for registrations",
+                dep: "Postback for deposits"
+            },
+            outgoing: {
+                title: "Outgoing Postbacks",
+                desc: "Here you can configure event transmission from pwa.bot to external systems.",
+                install: "Install",
+                open: "Open",
+                pushSub: "Push Subscription",
+                reg: "Registration",
+                dep: "Deposit",
+                method: "Method"
+            },
+            integrations: {
+                fb: "Integration with Facebook",
+                bigo: "Integration with Bigo Ads (Likee, imo)",
+                kwai: "Integration with KWAI Ads",
+                snapchat: "Integration with Snapchat Ads",
+                desc: "Read more about integration configuration",
+                addPixel: "Add pixel to install page",
+                addPixelDesc: "When enabled, the pixel will be placed on the PWA installation page",
+                addBtn: "Add Pixel"
+            }
+        },
+        push: {
+            title: "Push Notifications",
+            desc: "We don't know why this might be needed, but if you want, you can disable the request for permission to send PUSH notifications when installing PWA.",
+            collect: "Collect PUSH subscriptions",
+            collectSub: "When installing PWA, a system request for push notification permission will be shown."
+        },
+        extra: {
+            title: "Additional Settings",
+            desc: "Here is everything that didn't fit into other sections.",
+            richer: "Richer UI",
+            richerSub: "Beautiful system interface for displaying the application installation request.",
+            theme: "Automatic theme change",
+            themeSub: "When enabled, the theme (light/dark) will adapt to the user's device"
+        },
         langs: { tr: "Turkish", ru: "Russian", en: "English" }
     }
   }[lang];
@@ -423,6 +531,78 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
           </div>
       );
   }
+
+  // Component for Pixel Integration Card
+  const IntegrationCard = ({ title, enabled, pixelValue, onToggle, onChange, label }: any) => (
+      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-4">
+          <h3 className="font-bold text-gray-800 mb-1">{title}</h3>
+          <p className="text-sm text-gray-400 mb-6">
+              {t.analytics.integrations.desc} <a href="#" className="text-pwa-green hover:underline">{t.analytics.incoming.here}</a>.
+          </p>
+
+          {!enabled ? (
+              <button 
+                onClick={() => onToggle(true)}
+                className="flex items-center gap-2 border border-gray-200 rounded-lg px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                  <Plus size={16} /> {t.analytics.integrations.addBtn}
+              </button>
+          ) : (
+              <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                        <div>
+                            <div className="font-bold text-sm text-gray-800">{t.analytics.integrations.addPixel}</div>
+                            <div className="text-xs text-gray-400 mt-1">{t.analytics.integrations.addPixelDesc}</div>
+                        </div>
+                        <div 
+                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${enabled ? 'bg-pwa-green' : 'bg-gray-200'}`}
+                            onClick={() => onToggle(!enabled)}
+                        >
+                            <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${enabled ? 'translate-x-6' : ''}`}></div>
+                        </div>
+                   </div>
+                   {enabled && (
+                       <div>
+                           <label className="block text-xs font-medium text-gray-500 mb-1">Pixel ID</label>
+                           <input 
+                                type="text" 
+                                className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-pwa-green"
+                                value={pixelValue || ''}
+                                onChange={(e) => onChange(e.target.value)}
+                                placeholder="ID"
+                           />
+                       </div>
+                   )}
+              </div>
+          )}
+      </div>
+  );
+  
+  // Helper for Outgoing Postback Inputs
+  const OutgoingPostbackInput = ({ label, value, method, onChangeValue, onChangeMethod }: any) => (
+       <div className="flex items-center gap-4 py-3 border-b border-gray-50 last:border-0">
+           <div className="w-40 text-sm font-medium text-gray-700">{label}</div>
+           <div className="flex-1">
+               <input 
+                    type="text" 
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pwa-green placeholder-gray-300"
+                    placeholder={`URL для события ${label}`}
+                    value={value || ''}
+                    onChange={(e) => onChangeValue(e.target.value)}
+               />
+           </div>
+           <div className="w-24">
+                <select 
+                    className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-sm focus:outline-none focus:border-pwa-green"
+                    value={method || 'GET'}
+                    onChange={(e) => onChangeMethod(e.target.value)}
+                >
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                </select>
+           </div>
+       </div>
+  );
 
   // ... (Other handlers) ...
   const handleTagRemove = (tagToRemove: string) => {
@@ -592,6 +772,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                       <h3 className="font-bold text-lg text-gray-800">{t.design.editComment.title}</h3>
                       <button onClick={cancelEditing} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
                   </div>
+                  {/* ... Modal content remains the same ... */}
                   <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
                       {/* Avatar & Name */}
                       <div className="flex gap-4 items-start">
@@ -732,6 +913,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
       {/* Top Bar */}
       <div className="flex justify-between items-start mb-6">
+          {/* ... Header content ... */}
           <div className="flex items-center gap-4">
               <button onClick={onBack} className="p-1 hover:bg-gray-200 rounded-full text-gray-500 transition-colors">
                   <ChevronLeft size={20} />
@@ -1350,9 +1532,181 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                     </div>
                   </>
               )}
+
+              {/* Analytics Tab */}
+              {activeTab === 'analytics' && (
+                  <>
+                      {/* Incoming Postbacks */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.analytics.incoming.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">
+                              {t.analytics.incoming.desc} <a href="#" className="text-pwa-green hover:underline">{t.analytics.incoming.here}</a>.
+                          </p>
+                          
+                          <div className="mb-4">
+                              <label className="block text-xs font-medium text-gray-500 mb-1">{t.analytics.incoming.reg}</label>
+                              <div className="relative">
+                                  <input 
+                                      type="text" 
+                                      readOnly
+                                      value="https://api.pwa.bot/postback/?user_id={external_id}&event=reg"
+                                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-600 focus:outline-none"
+                                  />
+                                  <Copy size={16} className="absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-gray-600" />
+                              </div>
+                          </div>
+
+                          <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">{t.analytics.incoming.dep}</label>
+                              <div className="relative">
+                                  <input 
+                                      type="text" 
+                                      readOnly
+                                      value="https://api.pwa.bot/postback/?user_id={external_id}&event=dep&value={profit}&currency={currency}"
+                                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-600 focus:outline-none"
+                                  />
+                                  <Copy size={16} className="absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-gray-600" />
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Integrations (Pixels) */}
+                      <IntegrationCard 
+                          title={t.analytics.integrations.fb} 
+                          enabled={appData.pixel_fb_enabled}
+                          pixelValue={appData.pixel_fb_id}
+                          onToggle={(val: boolean) => setAppData({...appData, pixel_fb_enabled: val})}
+                          onChange={(val: string) => setAppData({...appData, pixel_fb_id: val})}
+                      />
+                      <IntegrationCard 
+                          title={t.analytics.integrations.bigo} 
+                          enabled={appData.pixel_bigo_enabled}
+                          pixelValue={appData.pixel_bigo_id}
+                          onToggle={(val: boolean) => setAppData({...appData, pixel_bigo_enabled: val})}
+                          onChange={(val: string) => setAppData({...appData, pixel_bigo_id: val})}
+                      />
+                      <IntegrationCard 
+                          title={t.analytics.integrations.kwai} 
+                          enabled={appData.pixel_kwai_enabled}
+                          pixelValue={appData.pixel_kwai_id}
+                          onToggle={(val: boolean) => setAppData({...appData, pixel_kwai_enabled: val})}
+                          onChange={(val: string) => setAppData({...appData, pixel_kwai_id: val})}
+                      />
+                      <IntegrationCard 
+                          title={t.analytics.integrations.snapchat} 
+                          enabled={appData.pixel_snapchat_enabled}
+                          pixelValue={appData.pixel_snapchat_id}
+                          onToggle={(val: boolean) => setAppData({...appData, pixel_snapchat_enabled: val})}
+                          onChange={(val: string) => setAppData({...appData, pixel_snapchat_id: val})}
+                      />
+
+                      {/* Outgoing Postbacks */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.analytics.outgoing.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.analytics.outgoing.desc}</p>
+                          
+                          <div className="border border-gray-100 rounded-lg overflow-hidden">
+                              <OutgoingPostbackInput 
+                                  label={t.analytics.outgoing.install} 
+                                  value={appData.postback_install}
+                                  method={appData.postback_install_method}
+                                  onChangeValue={(v: string) => setAppData({...appData, postback_install: v})}
+                                  onChangeMethod={(m: string) => setAppData({...appData, postback_install_method: m})}
+                              />
+                              <OutgoingPostbackInput 
+                                  label={t.analytics.outgoing.open} 
+                                  value={appData.postback_open}
+                                  method={appData.postback_open_method}
+                                  onChangeValue={(v: string) => setAppData({...appData, postback_open: v})}
+                                  onChangeMethod={(m: string) => setAppData({...appData, postback_open_method: m})}
+                              />
+                              <OutgoingPostbackInput 
+                                  label={t.analytics.outgoing.pushSub} 
+                                  value={appData.postback_push_sub}
+                                  method={appData.postback_push_sub_method}
+                                  onChangeValue={(v: string) => setAppData({...appData, postback_push_sub: v})}
+                                  onChangeMethod={(m: string) => setAppData({...appData, postback_push_sub_method: m})}
+                              />
+                              <OutgoingPostbackInput 
+                                  label={t.analytics.outgoing.reg} 
+                                  value={appData.postback_reg}
+                                  method={appData.postback_reg_method}
+                                  onChangeValue={(v: string) => setAppData({...appData, postback_reg: v})}
+                                  onChangeMethod={(m: string) => setAppData({...appData, postback_reg_method: m})}
+                              />
+                              <OutgoingPostbackInput 
+                                  label={t.analytics.outgoing.dep} 
+                                  value={appData.postback_dep}
+                                  method={appData.postback_dep_method}
+                                  onChangeValue={(v: string) => setAppData({...appData, postback_dep: v})}
+                                  onChangeMethod={(m: string) => setAppData({...appData, postback_dep_method: m})}
+                              />
+                          </div>
+                      </div>
+                  </>
+              )}
+
+              {/* Push Notifications Tab */}
+              {activeTab === 'push' && (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                      <h3 className="font-bold text-gray-800 mb-1">{t.push.title}</h3>
+                      <p className="text-sm text-gray-400 mb-6 leading-relaxed">{t.push.desc}</p>
+
+                      <div className="flex items-center justify-between">
+                            <div>
+                                <div className="font-bold text-sm text-gray-800">{t.push.collect}</div>
+                                <div className="text-xs text-gray-400 mt-1">{t.push.collectSub}</div>
+                            </div>
+                            <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.push_ask_permission ? 'bg-pwa-green' : 'bg-gray-200'}`}
+                                onClick={() => setAppData({...appData, push_ask_permission: !appData.push_ask_permission})}
+                            >
+                                <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.push_ask_permission ? 'translate-x-6' : ''}`}></div>
+                            </div>
+                        </div>
+                  </div>
+              )}
+
+              {/* Extra Tab */}
+              {activeTab === 'extra' && (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                      <h3 className="font-bold text-gray-800 mb-1">{t.extra.title}</h3>
+                      <p className="text-sm text-gray-400 mb-6">{t.extra.desc}</p>
+
+                      <div className="space-y-6">
+                          <div className="flex items-center justify-between">
+                                <div>
+                                    <div className="font-bold text-sm text-gray-800 flex items-center gap-2">
+                                        {t.extra.richer} <span className="bg-orange-100 text-orange-700 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">Beta</span>
+                                    </div>
+                                    <div className="text-xs text-gray-400 mt-1">{t.extra.richerSub}</div>
+                                </div>
+                                <div 
+                                    className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_richer_ui ? 'bg-pwa-green' : 'bg-gray-200'}`}
+                                    onClick={() => setAppData({...appData, extra_richer_ui: !appData.extra_richer_ui})}
+                                >
+                                    <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_richer_ui ? 'translate-x-6' : ''}`}></div>
+                                </div>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                                <div>
+                                    <div className="font-bold text-sm text-gray-800">{t.extra.theme}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{t.extra.themeSub}</div>
+                                </div>
+                                <div 
+                                    className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_auto_theme ? 'bg-pwa-green' : 'bg-gray-200'}`}
+                                    onClick={() => setAppData({...appData, extra_auto_theme: !appData.extra_auto_theme})}
+                                >
+                                    <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_auto_theme ? 'translate-x-6' : ''}`}></div>
+                                </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
               
-              {/* Placeholder for other tabs */}
-              {activeTab !== 'design' && activeTab !== 'tracker' && (
+              {/* Placeholder for tabs that might not be fully implemented yet if any */}
+              {activeTab !== 'design' && activeTab !== 'tracker' && activeTab !== 'analytics' && activeTab !== 'push' && activeTab !== 'extra' && (
                   <div className="bg-white p-12 rounded-xl border border-gray-200 shadow-sm text-center text-gray-500 animate-in fade-in duration-300">
                       <Settings className="mx-auto mb-4 text-gray-300 animate-spin-slow" size={48} />
                       <p>Content for {activeTab} tab would go here.</p>
@@ -1374,7 +1728,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                   <ProgressItem label={t.design.process.design} status="done" />
                   <ProgressItem label={t.design.process.desc} status={appData.description ? "done" : "none"} />
                   <ProgressItem label={t.design.process.comments} status={appData.comments.length > 0 ? "done" : "none"} />
-                  <ProgressItem label={t.design.process.pixels} status="none" />
+                  <ProgressItem label={t.design.process.pixels} status={(appData.pixel_fb_enabled || appData.pixel_bigo_enabled || appData.pixel_kwai_enabled || appData.pixel_snapchat_enabled) ? "done" : "none"} />
               </div>
 
               {/* Phone Preview */}

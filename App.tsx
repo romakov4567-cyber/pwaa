@@ -129,7 +129,7 @@ const App: React.FC = () => {
                   .upsert(payload, { onConflict: 'user_id' });
 
               if (error) {
-                  console.error('Error saving data to Supabase:', error);
+                  console.error('Error saving data to Supabase:', JSON.stringify(error, null, 2));
                   setSaveStatus('error');
               } else {
                   setSaveStatus('saved');

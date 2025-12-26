@@ -32,7 +32,7 @@ export interface PwaRow {
   domain?: string;
   geo?: string;
   iconColor?: string;
-  iconText?: any; // Changed from React.ReactNode to any to avoid persistence issues, usually string or component
+  iconText?: any;
   
   // Editor Data Fields
   developer?: string;
@@ -57,6 +57,35 @@ export interface PwaRow {
   enableWhitepage?: boolean;
   language?: string;
   languageCode?: string;
+
+  // Analytics & Postbacks
+  postback_install?: string;
+  postback_install_method?: 'GET' | 'POST';
+  postback_open?: string;
+  postback_open_method?: 'GET' | 'POST';
+  postback_push_sub?: string;
+  postback_push_sub_method?: 'GET' | 'POST';
+  postback_reg?: string;
+  postback_reg_method?: 'GET' | 'POST';
+  postback_dep?: string;
+  postback_dep_method?: 'GET' | 'POST';
+
+  // Pixels / Integrations
+  pixel_fb_enabled?: boolean;
+  pixel_fb_id?: string;
+  pixel_bigo_enabled?: boolean;
+  pixel_bigo_id?: string;
+  pixel_kwai_enabled?: boolean;
+  pixel_kwai_id?: string;
+  pixel_snapchat_enabled?: boolean;
+  pixel_snapchat_id?: string;
+
+  // Push Settings
+  push_ask_permission?: boolean;
+
+  // Extra Settings
+  extra_richer_ui?: boolean;
+  extra_auto_theme?: boolean;
 }
 
 export interface Invoice {
