@@ -360,141 +360,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             themeSub: "При включении, тема оформления (светлая/темная) будет подстраиваться под устройство пользователя"
         },
         langs: { tr: "Турецкий", ru: "Русский", en: "Английский" }
-    },
-    en: {
-        launch: "Launch", preview: "Preview", save: "Save", saved: "Saved",
-        tabs: { domain: "Domain", tracker: "Tracker", design: "Design", analytics: "Analytics", push: "Push Notifications", extra: "Extra" },
-        stopped: "Stopped",
-        draft: "Draft",
-        tracker: {
-            offer: {
-                title: "Offer and parameters",
-                desc: "Enter a link to the offer where PWA users should land. See how to set parameters in the offer link",
-                here: "here",
-                placeholder: "Offer Link",
-                macros: "Available macros:",
-                passGet: "Pass GET parameters to offer",
-                passGetSub: "When enabled, all GET parameters will be passed to the offer"
-            },
-            geo: {
-                title: "Geo Cloaking",
-                desc: "You can select one or several regions where PWA will work. Users from other countries will be sent to Whitepage. If Geo is selected, but Whitepage is not configured or disabled, users will see this placeholder",
-                noCloak: "Cloaking not needed. Allow all GEO",
-                specific: "Allow only specific GEO"
-            },
-            device: {
-                title: "Device Cloaking",
-                desc: "Traffic routing rules for different devices. If selected to send to Whitepage but it is not configured, users will see this placeholder",
-                android: "Android devices only",
-                androidSub: "When this option is enabled, PWA will work only for Android devices, and other traffic will be sent to Whitepage."
-            },
-            whitepage: {
-                title: "Whitepage",
-                desc: "Here you can configure the whitepage that will be displayed for inappropriate traffic",
-                enable: "Enable whitepage",
-                enableSub: "When enabled, all inappropriate traffic will be redirected to whitepage."
-            }
-        },
-        design: {
-            title: "Design Settings",
-            desc: "You can do everything yourself or copy the design of an existing application.",
-            copy: "Copy from Google Play",
-            manual: "Do it manually",
-            langCatTitle: "PWA Language and Category",
-            langCatDesc: "Select the main language in which all system labels on the PWA installation page will be displayed. The selected category will affect some labels on the installation page, as well as the style and theme when generating descriptions and comments.",
-            lang: "Language",
-            cat: "Category",
-            installTitle: "Installation Page Design",
-            installSub: "App Header",
-            upload: "Upload",
-            appName: "App Name",
-            dev: "Developer",
-            size: "Size",
-            age: "Age",
-            downloads: "Downloads",
-            mediaTitle: "Images and Video",
-            mediaSub: "Upload images and videos to display on the installation page",
-            videoInfo: "Video will always appear first in app screenshots",
-            descTitle: "Description and Tags",
-            descSub: "Good description and tags increase conversion. Do not neglect this.",
-            mainLang: "Main Language",
-            descLabel: "App Description",
-            tagsLabel: "Description Tags",
-            addTags: "Add Tags",
-            genDesc: "Generate description with ChatGPT",
-            randTags: "Pick random tags",
-            ratingsTitle: "Ratings and Reviews",
-            rating: "Rating",
-            reviewsCount: "Reviews Count",
-            commentsTitle: "Comments",
-            keepDates: "Keep review dates current",
-            keepDatesSub: "When enabled, review dates will always be current",
-            editComment: {
-                title: "Edit Review",
-                username: "Username",
-                date: "Date",
-                rating: "Rating",
-                likes: "Likes",
-                text: "Review Text",
-                devResponse: "Developer Response",
-                avatar: "Avatar",
-                uploadAvatar: "Upload Photo",
-                cancel: "Cancel",
-                save: "Save",
-                delete: "Delete",
-                genComment: "Generate comment",
-                genResponse: "Generate response"
-            },
-            process: {
-                title: "Setup Process",
-                domain: "Domain", offer: "Offer", cloak: "Geo Cloaking", white: "Whitepage", design: "Design", desc: "App Description", comments: "Comments", pixels: "Pixels",
-                status: { done: "Done", process: "In Progress", none: "Not Set" }
-            }
-        },
-        analytics: {
-            incoming: {
-                title: "Incoming Postbacks",
-                desc: "To display registrations and deposits in pwa.bot statistics, add postbacks to your affiliate network or tracker. See how to configure",
-                here: "here",
-                reg: "Postback for registrations",
-                dep: "Postback for deposits"
-            },
-            outgoing: {
-                title: "Outgoing Postbacks",
-                desc: "Here you can configure event transmission from pwa.bot to external systems.",
-                install: "Install",
-                open: "Open",
-                pushSub: "Push Subscription",
-                reg: "Registration",
-                dep: "Deposit",
-                method: "Method"
-            },
-            integrations: {
-                fb: "Integration with Facebook",
-                bigo: "Integration with Bigo Ads (Likee, imo)",
-                kwai: "Integration with KWAI Ads",
-                snapchat: "Integration with Snapchat Ads",
-                desc: "Read more about integration configuration",
-                addPixel: "Add pixel to install page",
-                addPixelDesc: "When enabled, the pixel will be placed on the PWA installation page",
-                addBtn: "Add Pixel"
-            }
-        },
-        push: {
-            title: "Push Notifications",
-            desc: "We don't know why this might be needed, but if you want, you can disable the request for permission to send PUSH notifications when installing PWA.",
-            collect: "Collect PUSH subscriptions",
-            collectSub: "When installing PWA, a system request for push notification permission will be shown."
-        },
-        extra: {
-            title: "Additional Settings",
-            desc: "Here is everything that didn't fit into other sections.",
-            richer: "Richer UI",
-            richerSub: "Beautiful system interface for displaying the application installation request.",
-            theme: "Automatic theme change",
-            themeSub: "When enabled, the theme (light/dark) will adapt to the user's device"
-        },
-        langs: { tr: "Turkish", ru: "Russian", en: "English" }
     }
   }[lang];
 
@@ -606,7 +471,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
   // ... (Other handlers) ...
   const handleTagRemove = (tagToRemove: string) => {
-      setAppData({...appData, tags: appData.tags.filter(tag => tag !== tagToRemove)});
+      setAppData({...appData, tags: appData.tags.filter((tag: string) => tag !== tagToRemove)});
   };
 
   const handleAddTag = () => {
@@ -634,7 +499,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   };
 
   const handleRemoveScreenshot = (indexToRemove: number) => {
-    const newScreenshots = appData.screenshots.filter((_, index) => index !== indexToRemove);
+    const newScreenshots = appData.screenshots.filter((_: string, index: number) => index !== indexToRemove);
     setAppData({ ...appData, screenshots: newScreenshots });
   };
   
@@ -686,12 +551,12 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
   const saveComment = () => {
       if (!tempComment) return;
-      setAppData(prev => {
-          const exists = prev.comments.some(c => c.id === tempComment.id);
+      setAppData((prev: any) => {
+          const exists = prev.comments.some((c: any) => c.id === tempComment.id);
           return {
               ...prev,
               comments: exists 
-                  ? prev.comments.map(c => c.id === tempComment.id ? tempComment : c)
+                  ? prev.comments.map((c: any) => c.id === tempComment.id ? tempComment : c)
                   : [tempComment, ...prev.comments]
           };
       });
@@ -701,9 +566,9 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
   const handleDeleteComment = () => {
       if (!tempComment) return;
-      setAppData(prev => ({
+      setAppData((prev: any) => ({
           ...prev,
-          comments: prev.comments.filter(c => c.id !== tempComment.id)
+          comments: prev.comments.filter((c: any) => c.id !== tempComment.id)
       }));
       setEditingCommentId(null);
       setTempComment(null);
@@ -1312,7 +1177,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                          </div>
 
                          <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-                             {appData.screenshots.map((src, i) => (
+                             {appData.screenshots.map((src: string, i: number) => (
                                  <div key={i} className="w-24 h-40 flex-shrink-0 relative rounded-lg overflow-hidden group shadow-sm">
                                      <img src={src} className="w-full h-full object-cover" />
                                      <button 
@@ -1362,7 +1227,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                          <div className="mb-6">
                              <label className="block text-xs font-medium text-gray-400 mb-2 ml-1">{t.design.tagsLabel}</label>
                              <div className="flex flex-wrap gap-2 mb-3">
-                                 {appData.tags.map((tag, i) => (
+                                 {appData.tags.map((tag: string, i: number) => (
                                      <div key={i} className="bg-cyan-100/50 text-cyan-800 px-3 py-1 rounded-full text-sm flex items-center gap-1.5">
                                          {tag}
                                          <button onClick={() => handleTagRemove(tag)} className="bg-cyan-200/50 rounded-full p-0.5 hover:bg-cyan-300/50"><X size={10} /></button>
@@ -1465,7 +1330,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                          </div>
 
                          <div className="space-y-4">
-                             {appData.comments.map((comment) => (
+                             {appData.comments.map((comment: any) => (
                                  <div key={comment.id} className="border border-gray-200 rounded-lg p-4 relative group hover:border-pwa-green transition-colors bg-white">
                                      <button 
                                         onClick={() => startEditingComment(comment)}
