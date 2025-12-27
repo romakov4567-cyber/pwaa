@@ -221,7 +221,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             checkBtn: "Проверить настройки",
             saveContinue: "Сохранить и продолжить"
         },
-        // ... (rest of translations remain same)
         tracker: {
             offer: {
                 title: "Оффер и параметры",
@@ -282,163 +281,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             ratingsTitle: "Оценки и отзывы",
             rating: "Рейтинг",
             reviewsCount: "Количество отзывов",
-            commentsTitle: "Комментарии",
-            keepDates: "Поддерживать актуальные даты комментариев",
-            keepDatesSub: "При включении даты комментариев всегда будут актуальными",
-            editComment: {
-                title: "Редактирование отзыва",
-                username: "Имя пользователя",
-                date: "Дата",
-                rating: "Оценка",
-                likes: "Лайков",
-                text: "Текст отзыва",
-                devResponse: "Ответ разработчика",
-                avatar: "Аватар",
-                uploadAvatar: "Загрузить фото",
-                cancel: "Отмена",
-                save: "Сохранить",
-                delete: "Удалить",
-                genComment: "Сгенерировать коммент",
-                genResponse: "Сгенерировать ответ"
-            },
-            process: {
-                title: "Процесс настройки",
-                domain: "Домен", offer: "Оффер", cloak: "Клоакинг по гео", white: "Whitepage", design: "Оформление", desc: "Описание приложения", comments: "Комментарии", pixels: "Пиксели",
-                status: { done: "Готово", process: "В процессе", none: "Не настроено" }
-            }
-        },
-        analytics: {
-            incoming: {
-                title: "Входящие постбеки",
-                desc: "Чтобы в статистике pwa.bot отображались регистрации и депозиты, добавьте постбеки в свою партнерку или трекер. Как настроить смотрите",
-                here: "здесь",
-                reg: "Постбек для регистраций",
-                dep: "Постбек для депозитов"
-            },
-            outgoing: {
-                title: "Исходящие постбеки",
-                desc: "Здесь можно настроить передачу событий из pwa.bot во внешние системы.",
-                install: "Инсталл",
-                open: "Открытие",
-                pushSub: "Подписка на Push",
-                reg: "Регистрация",
-                dep: "Депозит",
-                method: "Method"
-            },
-            integrations: {
-                fb: "Интеграция с Facebook",
-                bigo: "Интеграция с Bigo Ads (Likee, imo)",
-                kwai: "Интеграция с KWAI Ads",
-                snapchat: "Интеграция со Snapchat Ads",
-                desc: "Подробнее о настройке интеграции можно прочитать",
-                addPixel: "Добавить пиксель",
-                addPixelDesc: "При включении, пиксель будет размещен на странице установки PWA",
-                addBtn: "Добавить пиксель"
-            }
-        },
-        push: {
-            title: "Push уведомления",
-            desc: "Мы не знаем зачем это может понадобиться, но, если хотите, можете отключить запрос разрешения на отправку PUSH уведомлений при установке PWA.",
-            collect: "Собирать PUSH подписки",
-            collectSub: "При установке PWA будет показан системный запрос на разрешение push уведомлений."
-        },
-        extra: {
-            title: "Дополнительные настройки",
-            desc: "Здесь все, что не поместилось в другие разделы.",
-            richer: "Richer UI",
-            richerSub: "Красивый системный интерфейс для отображения запроса на установку приложения.",
-            theme: "Автоматическая смена темы",
-            themeSub: "При включении, тема оформления (светлая/темная) будет подстраиваться под устройство пользователя"
-        },
-        langs: { tr: "Турецкий", ru: "Русский", en: "Английский" }
-    },
-    en: {
-        launch: "Launch", preview: "Preview", save: "Save", saved: "Saved",
-        tabs: { domain: "Domain", tracker: "Tracker", design: "Design", analytics: "Analytics", push: "Push Notifications", extra: "Extra" },
-        stopped: "Stopped",
-        draft: "Draft",
-        domain: {
-            title: "Domain",
-            desc: "A domain is required for PWA to work. You can buy a domain from us or use your own.",
-            buyTitle: "Buy ready-made domain",
-            ownTitle: "Use your own domain",
-            buyPrice: "$5",
-            ownPrice: "Free",
-            selectTitle: "Select a domain",
-            selectDesc: "All domains are already configured and working. No additional configuration is needed.",
-            ownDomainTitle: "Domain Binding",
-            ownDomainDesc: "Enter the domain and your Cloudflare account details. We will automatically configure DNS and SSL.",
-            selectLabel: "Domain",
-            placeholder: "Select domain",
-            ownPlaceholder: "example.com",
-            cfEmail: "Cloudflare Email",
-            cfKey: "Global API Key",
-            cfIntegration: "Cloudflare Integration",
-            cfAuto: "Start Auto-setup",
-            buyBtn: "Buy domain",
-            checkBtn: "Check settings",
-            saveContinue: "Save and continue"
-        },
-        tracker: {
-            offer: {
-                title: "Offer and parameters",
-                desc: "Enter a link to the offer where PWA users should land. See how to set parameters in the offer link",
-                here: "here",
-                placeholder: "Offer Link",
-                macros: "Available macros:",
-                passGet: "Pass GET parameters to offer",
-                passGetSub: "When enabled, all GET parameters will be passed to the offer"
-            },
-            geo: {
-                title: "Geo Cloaking",
-                desc: "You can select one or several regions where PWA will work. Users from other countries will be sent to Whitepage. If Geo is selected, but Whitepage is not configured or disabled, users will see this placeholder",
-                noCloak: "Cloaking not needed. Allow all GEO",
-                specific: "Allow only specific GEO"
-            },
-            device: {
-                title: "Device Cloaking",
-                desc: "Traffic routing rules for different devices. If selected to send to Whitepage but it is not configured, users will see this placeholder",
-                android: "Android devices only",
-                androidSub: "When this option is enabled, PWA will work only for Android devices, and other traffic will be sent to Whitepage."
-            },
-            whitepage: {
-                title: "Whitepage",
-                desc: "Here you can configure the whitepage that will be displayed for inappropriate traffic",
-                enable: "Enable whitepage",
-                enableSub: "When enabled, all inappropriate traffic will be redirected to whitepage."
-            }
-        },
-        design: {
-            title: "Design Settings",
-            desc: "You can do everything yourself or copy the design of an existing application.",
-            copy: "Copy from Google Play",
-            manual: "Do it manually",
-            langCatTitle: "PWA Language and Category",
-            langCatDesc: "Select the main language in which all system labels on the PWA installation page will be displayed. The selected category will affect some labels on the installation page, as well as the style and theme when generating descriptions and comments.",
-            lang: "Language",
-            cat: "Category",
-            installTitle: "Installation Page Design",
-            installSub: "App Header",
-            upload: "Upload",
-            appName: "App Name",
-            dev: "Developer",
-            size: "Size",
-            age: "Age",
-            downloads: "Downloads",
-            mediaTitle: "Images and Video",
-            mediaSub: "Upload images and videos to display on the installation page",
-            videoInfo: "Video will always appear first in app screenshots",
-            descTitle: "Description and Tags",
-            descSub: "Good description and tags increase conversion. Do not neglect this.",
-            mainLang: "Main Language",
-            descLabel: "App Description",
-            tagsLabel: "Description Tags",
-            addTags: "Add Tags",
-            genDesc: "Generate description with ChatGPT",
-            randTags: "Pick random tags",
-            ratingsTitle: "Ratings and Reviews",
-            rating: "Rating",
-            reviewsCount: "Reviews Count",
             commentsTitle: "Comments",
             keepDates: "Keep review dates current",
             keepDatesSub: "When enabled, review dates will always be current",
@@ -579,12 +421,21 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   };
 
   const handlePreview = () => {
+    // Сохраняем данные для предпросмотра
     try {
         localStorage.setItem('pwa-preview-data', JSON.stringify(appData));
+    } catch (e) {
+        console.error("Local storage sync error", e);
+    }
+
+    // Если у приложения привязан домен, открываем его в новой вкладке
+    if (appData.domain && appData.domain.trim() !== '') {
+        const domain = appData.domain.includes('://') ? appData.domain : `https://${appData.domain}`;
+        const previewUrl = `${domain}/#preview`;
+        window.open(previewUrl, '_blank');
+    } else {
+        // Иначе открываем внутренний предпросмотр
         window.location.hash = 'preview';
-    } catch (error) {
-        console.error("Failed to save preview data to localStorage:", error);
-        alert("Could not open preview.");
     }
   };
 
@@ -597,9 +448,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
         {label}
       </button>
   );
-
-  // ... (Other handlers unchanged)
-  // ... (ProgressItem, IntegrationCard, OutgoingPostbackInput components)
 
   const ProgressItem = ({ label, status }: { label: string, status: 'done' | 'process' | 'none' }) => {
       const colors = {
@@ -1130,7 +978,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                         placeholder={t.domain.ownPlaceholder} 
                                         value={appData.domain || ''}
                                         onChange={(e) => setAppData({...appData, domain: e.target.value})}
-                                        className="w-full bg-[#333] border-none text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                        className="w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors"
                                     />
                                     <div className="flex gap-3">
                                         <input 
@@ -1138,14 +986,14 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                             placeholder={t.domain.cfEmail} 
                                             value={appData.cloudflareEmail || ''}
                                             onChange={(e) => setAppData({...appData, cloudflareEmail: e.target.value})}
-                                            className="w-1/2 bg-[#333] border-none text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                            className="w-1/2 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors"
                                         />
                                         <input 
                                             type="text" 
                                             placeholder={t.domain.cfKey} 
                                             value={appData.cloudflareApiKey || ''}
                                             onChange={(e) => setAppData({...appData, cloudflareApiKey: e.target.value})}
-                                            className="w-1/2 bg-[#333] border-none text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                            className="w-1/2 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors"
                                         />
                                     </div>
                                 </div>
@@ -1477,7 +1325,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                              </div>
                          </div>
                     </div>
-                    {/* ... Rest of Design Content ... */}
+
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                          <div className="flex justify-between items-start mb-6">
                             <div>

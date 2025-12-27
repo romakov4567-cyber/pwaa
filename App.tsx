@@ -54,8 +54,22 @@ const App: React.FC = () => {
   // Editor State
   const [editingPwa, setEditingPwa] = useState<PwaRow | null>(null);
 
+  // PWA / Public Mode State
+  const [isPwaMode, setIsPwaMode] = useState(false);
+
   const langMenuRef = useRef<HTMLDivElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Check for Standalone Mode on Mount
+  useEffect(() => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+      
+      // Removed hostname check to prevent lockout in dev environments.
+      // Now PWA mode only activates if explicitly previewing or installed.
+      if (isStandalone || window.location.hash === '#preview') {
+          setIsPwaMode(true);
+      }
+  }, []);
 
   // Initialize Auth
   useEffect(() => {
@@ -93,6 +107,11 @@ const App: React.FC = () => {
     const handleHashChange = () => {
       const currentHash = window.location.hash;
       setHash(currentHash);
+      if (currentHash === '#preview') {
+          setIsPwaMode(true);
+      } else {
+          setIsPwaMode(false);
+      }
       const view = getViewFromUrl();
       setCurrentView(view);
     };
@@ -209,6 +228,15 @@ const App: React.FC = () => {
   const handleCreateInvoice = (invoice: Invoice) => {
       setInvoices(prev => [invoice, ...prev]);
   };
+
+  // PWA MODE RENDER (Public or Standalone)
+  if (isPwaMode) {
+      return (
+        <div className="fixed inset-0 z-50 overflow-auto bg-gray-50">
+            <PreviewPage lang={lang} />
+        </div>
+      );
+  }
 
   if (!isAuthenticated) {
     return <LandingPage lang={lang} setLang={setLang} />;
@@ -390,50 +418,40 @@ const App: React.FC = () => {
     </header>
   );
 
-  const isPreview = hash === '#preview';
-
   return (
-    <>
-      {isPreview && (
-        <div className="fixed inset-0 z-50 overflow-auto bg-gray-50">
-            <PreviewPage lang={lang} />
-        </div>
-      )}
-
-      <div className={`flex min-h-screen bg-[#F3F4F6] ${isPreview ? 'hidden' : ''}`}>
-        <Sidebar lang={lang} currentView={currentView} onNavigate={handleNavigate} />
+    <div className={`flex min-h-screen bg-[#F3F4F6]`}>
+      <Sidebar lang={lang} currentView={currentView} onNavigate={handleNavigate} />
+      
+      <div className="flex-1 flex flex-col ml-64 min-w-0 transition-all duration-300">
+        <Header />
         
-        <div className="flex-1 flex flex-col ml-64 min-w-0 transition-all duration-300">
-          <Header />
-          
-          <main className="flex-1 p-6 overflow-auto">
-            {currentView === 'dashboard' && (
-              <Dashboard 
-                rows={rows} 
-                onCreate={handleCreatePwa} 
-                onDelete={handleDeletePwa} 
-                onEdit={handleEditPwa} 
-                lang={lang} 
-              />
-            )}
-            {currentView === 'editor' && (
-              <Editor 
-                onBack={() => handleNavigate('dashboard')} 
-                onSave={handleSavePwa}
-                lang={lang} 
-                initialData={editingPwa}
-              />
-            )}
-            {currentView === 'analytics' && (
-              <Analytics lang={lang} hasData={rows.length > 0} />
-            )}
-            {currentView === 'invoices' && (
-              <Invoices lang={lang} invoices={invoices} onCreateInvoice={handleCreateInvoice} />
-            )}
-          </main>
-        </div>
+        <main className="flex-1 p-6 overflow-auto">
+          {currentView === 'dashboard' && (
+            <Dashboard 
+              rows={rows} 
+              onCreate={handleCreatePwa} 
+              onDelete={handleDeletePwa} 
+              onEdit={handleEditPwa} 
+              lang={lang} 
+            />
+          )}
+          {currentView === 'editor' && (
+            <Editor 
+              onBack={() => handleNavigate('dashboard')} 
+              onSave={handleSavePwa}
+              lang={lang} 
+              initialData={editingPwa}
+            />
+          )}
+          {currentView === 'analytics' && (
+            <Analytics lang={lang} hasData={rows.length > 0} />
+          )}
+          {currentView === 'invoices' && (
+            <Invoices lang={lang} invoices={invoices} onCreateInvoice={handleCreateInvoice} />
+          )}
+        </main>
       </div>
-    </>
+    </div>
   );
 };
 

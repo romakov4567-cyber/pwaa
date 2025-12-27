@@ -5,7 +5,7 @@
 */
 
 import React, { useState, useEffect } from 'react';
-import { Star, ArrowLeft, MoreVertical, Search, ArrowRight, Share2 } from 'lucide-react';
+import { Star, ArrowLeft, MoreVertical, Search, ArrowRight, Share2, Loader2 } from 'lucide-react';
 import { Language } from '../types';
 
 interface AppData {
@@ -28,6 +28,36 @@ interface AppData {
     offerLink?: string;
 }
 
+const DEFAULT_DATA: AppData = {
+    name: 'Sweet Bananza LC',
+    developer: 'Denesik LLC',
+    category: 'Gambling',
+    rating: 4.93,
+    ratingDistribution: [70, 15, 10, 3, 2],
+    reviewsCount: '1538',
+    downloads: '50,000+',
+    size: '5Mb',
+    age: '18+',
+    description: '**App: Ultimate Gamble**\n\nExperience the thrill of the ultimate slot machine experience right in your pocket. Spin to win with amazing graphics and sound effects.\n\nOne of the standout features of Ultimate Gamble is its constant stream of promotions.',
+    iconColor: 'bg-purple-600',
+    iconUrl: '',
+    screenshots: [],
+    tags: ['Best choice', 'Secure payments', 'Roulette King'],
+    comments: [
+        { 
+            id: 1, 
+            user: 'Lessie_Kshlerin22', 
+            avatarUrl: '',
+            date: '12.12.2024', 
+            rating: 5, 
+            likes: 42,
+            text: 'Love this app! The bonuses are amazing and the interface is super user-friendly.' 
+        }
+    ],
+    languageCode: 'ru',
+    offerLink: ''
+};
+
 const TRANSLATIONS: Record<string, any> = {
     en: { install: "Install", ads: "Contains ads", purchases: "In-app purchases", about: "About this app", ratingsReviews: "Ratings and reviews", reviews: "reviews", downloads: "Downloads", size: "Size", rating: "Rating", dataSafety: "Data safety", dataSafetyDesc: "To manage your safety, it's important to understand how developers collect and share your data.", helpful: "Helpful?", yes: "Yes", no: "No" },
     ru: { install: "Установить", ads: "Есть реклама", purchases: "Покупки в приложении", about: "Об этом приложении", ratingsReviews: "Оценки и отзывы", reviews: "отзывов", downloads: "Скачиваний", size: "Размер", rating: "Рейтинг", dataSafety: "Безопасность данных", dataSafetyDesc: "Чтобы управлять своей безопасностью, важно понимать, как разработчики собирают и передают ваши данные.", helpful: "Полезно?", yes: "Да", no: "Нет" },
@@ -38,47 +68,92 @@ const TRANSLATIONS: Record<string, any> = {
 
 export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
     const [data, setData] = useState<AppData | null>(null);
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const [isStandalone, setIsStandalone] = useState(false);
 
     useEffect(() => {
+        // Load data from storage (in a real app, this would fetch based on domain)
         const stored = localStorage.getItem('pwa-preview-data');
         if (stored) {
             try {
-                setData(JSON.parse(stored));
+                const parsedData = JSON.parse(stored);
+                setData(parsedData);
+                
+                // Dynamically update document title and icon to simulate the PWA environment
+                if (parsedData.name) document.title = parsedData.name;
+                if (parsedData.iconUrl) {
+                    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+                    if (!link) {
+                        link = document.createElement('link');
+                        link.rel = 'icon';
+                        document.getElementsByTagName('head')[0].appendChild(link);
+                    }
+                    link.href = parsedData.iconUrl;
+                }
             } catch (e) {
                 console.error("Failed to parse preview data", e);
+                setData(DEFAULT_DATA);
             }
+        } else {
+            // Fallback for when directly accessing or if storage empty
+            setData(DEFAULT_DATA);
         }
+
+        // Listen for PWA install prompt event
+        const handleBeforeInstallPrompt = (e: any) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+        // Check if running in standalone mode (installed)
+        const checkStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+        setIsStandalone(checkStandalone);
+
+        return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     }, []);
 
-    // Effect to simulate PWA opening behavior in standalone mode
+    // REDIRECT LOGIC: If app is installed/standalone, open the offer link
     useEffect(() => {
-        // Check if the app is running in standalone mode (installed PWA)
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
-        
         if (isStandalone && data?.offerLink) {
              let link = data.offerLink;
-             // Simple macro replacement as per Editor logic
-             link = link.replace('{user_id}', 'pwa_user');
-             window.location.href = link;
+             // Simple macro replacement
+             link = link.replace('{user_id}', 'pwa_installed_user');
+             // Redirect immediately
+             window.location.replace(link);
         }
-    }, [data]);
+    }, [isStandalone, data]);
 
-    if (!data) return <div className="p-10 text-center text-gray-500">Loading preview...</div>;
+    if (!data) return <div className="min-h-screen flex items-center justify-center bg-white"><Loader2 className="animate-spin text-gray-400" size={32} /></div>;
+    
+    // If standalone, we show a loader while redirecting (or nothing if redirect is fast)
+    if (isStandalone) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+                <Loader2 className="animate-spin text-[#01875f] mb-4" size={48} />
+                <p className="text-gray-500 font-medium">Opening...</p>
+            </div>
+        );
+    }
 
     const langCode = data.languageCode || 'en';
     const t = TRANSLATIONS[langCode] || TRANSLATIONS['en'];
 
-    const handleInstall = () => {
-        // In a real PWA context, the browser handles the installation.
-        // For this preview/simulator, pressing "Install" mimics the flow of 
-        // installing -> opening the app -> redirecting to the tracker URL.
-        if (data.offerLink) {
-             let link = data.offerLink;
-             link = link.replace('{user_id}', 'preview_install');
-             // Redirect to offer link to simulate "opening" the app content
-             window.location.href = link;
+    const handleInstall = async () => {
+        if (deferredPrompt) {
+            // Trigger native install prompt
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            setDeferredPrompt(null);
         } else {
-             alert(lang === 'ru' ? 'Ссылка оффера не настроена в разделе Трекер' : 'Offer link is not configured in Tracker section');
+            // Fallback for demo or if already installed/not supported
+            if (data.offerLink) {
+                 // Simulate "Download" behavior -> Usually this would be the end of the web flow
+                 // and the beginning of the installed app flow.
+                 alert(langCode === 'ru' ? 'Установка приложения началась...' : 'App installation started...');
+                 // In a real PWA builder, we might redirect to the .apk file here if it's not a pure PWA
+            }
         }
     };
 
@@ -87,7 +162,7 @@ export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
             {/* Header */}
             <div className="p-4 flex items-center justify-between sticky top-0 bg-white z-20 border-b border-gray-100">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => window.location.hash = ''} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <button onClick={() => window.history.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                         <ArrowLeft size={24} className="text-gray-700" />
                     </button>
                     <div className="flex items-center gap-3">
