@@ -5,7 +5,8 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight, Wand2 } from 'lucide-react';
+// Added missing Copy icon to the lucide-react imports
+import { ChevronLeft, Play, Eye, Save, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight, Wand2, Copy } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
@@ -82,118 +83,7 @@ const AVAILABLE_DOMAINS = [
     'app-store-mirror.net'
 ];
 
-const sweetBananzaData = {
-      name: 'Sweet Bananza LC',
-      developer: 'Denesik LLC',
-      category: 'Gambling',
-      description: '**App: Ultimate Gamble**\n\nExperience the thrill of the ultimate slot machine experience right in your pocket. Spin to win with amazing graphics and sound effects.\n\nOne of the standout features of Ultimate Gamble is its constant stream of promotions.',
-      rating: 4.93,
-      ratingDistribution: [70, 15, 10, 3, 2],
-      reviewsCount: '1538',
-      downloads: '50,000+',
-      size: '5Mb',
-      age: '18+',
-      iconColor: 'bg-purple-600',
-      iconUrl: '',
-      screenshots: [] as string[],
-      videoUrl: '',
-      tags: ['Best choice', 'Secure payments', 'Roulette King', 'Blackjack Master', '24/7 support'],
-      comments: [
-        { 
-            id: 1, 
-            user: 'Lessie_Kshlerin22', 
-            avatarUrl: '', // empty = generate from name
-            date: '12.12.2024', 
-            rating: 5, 
-            likes: 42,
-            text: 'Love this app! The bonuses are amazing and the interface is super user-friendly. Winning feels easier and more exciting! Highly recommend for a fun experience! 💰🎲✨',
-            developerResponse: 'Спасибо за ваш отзыв! Мы рады, что вам понравилось наше приложение. Удачи в игре!'
-        },
-        { 
-            id: 2, 
-            user: 'Barrett.Klein-Roberts', 
-            avatarUrl: '',
-            date: '10.12.2024', 
-            rating: 4, 
-            likes: 12,
-            text: 'I\'ve been using this app for a few weeks, and it\'s been an amazing experience. The interface is user-friendly and the games are engaging. I\'ve had some good wins, which has been a nice bonus. It definitely adds excitement to my downtime. Highly recommended!' 
-        },
-        { 
-            id: 3, 
-            user: 'Lonny8', 
-            avatarUrl: '',
-            date: '08.12.2024', 
-            rating: 5, 
-            likes: 8,
-            text: 'I\'ve been using this app for a while now, and the bonuses are fantastic! The user interface is' 
-        }
-      ],
-      keepReviewDatesCurrent: false,
-      offerLink: 'https://example-offer.com?click_id={user_id}',
-      passGetParams: true,
-      geoCloaking: 'all' as 'all' | 'specific',
-      androidOnly: true,
-      enableWhitepage: false,
-      language: 'Турецкий',
-      languageCode: 'tr',
-      push_ask_permission: true,
-      extra_richer_ui: true,
-      extra_auto_theme: false
-};
-
-const defaultData: Partial<PwaRow> = {
-      name: 'New Application',
-      developer: 'Developer Name',
-      category: 'Utility',
-      description: '',
-      rating: 5.0,
-      ratingDistribution: [100, 0, 0, 0, 0],
-      reviewsCount: '100',
-      downloads: '100+',
-      size: '15Mb',
-      age: '3+',
-      iconColor: 'bg-blue-500',
-      iconUrl: '',
-      screenshots: [] as string[],
-      videoUrl: '',
-      tags: [] as string[],
-      comments: [] as any[],
-      keepReviewDatesCurrent: false,
-      offerLink: '',
-      passGetParams: false,
-      geoCloaking: 'all' as 'all' | 'specific',
-      androidOnly: false,
-      enableWhitepage: false,
-      language: 'Английский',
-      languageCode: 'en',
-      
-      // Cloudflare
-      cloudflareEmail: '',
-      cloudflareApiKey: '',
-
-      // Default Analytics
-      postback_install_method: 'GET',
-      postback_open_method: 'GET',
-      postback_push_sub_method: 'GET',
-      postback_reg_method: 'GET',
-      postback_dep_method: 'GET',
-      
-      // Default Pixels
-      pixel_fb_enabled: false,
-      pixel_bigo_enabled: false,
-      pixel_kwai_enabled: false,
-      pixel_snapchat_enabled: false,
-
-      // Default Push
-      push_ask_permission: true,
-
-      // Default Extra
-      extra_richer_ui: false,
-      extra_auto_theme: false
-};
-
-export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
-  const translations: Record<Language, any> = {
+const translations: Record<Language, any> = {
     ru: {
         launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
         tabs: { domain: "Домен", tracker: "Трекер", design: "Оформление", analytics: "Аналитика", push: "Push-уведомления", extra: "Дополнительно" },
@@ -256,7 +146,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             copy: "Скопировать из Google Play",
             manual: "Сделать вручную",
             langCatTitle: "Язык и категория PWA",
-            langCatDesc: "Выберите основной язык, на котором будут отображаться все системные надписи на странице установки PWA. Выбранная категория будет влиять на некоторые надписи на странице установки, а также на стиль и тематику при генерации описания и комментариев.",
+            langCatDesc: "Выберите основной язык, на котором будут отобраляться все системные надписи на странице установки PWA. Выбранная категория будет влиять на некоторые надписи на странице установки, а также на стиль и тематику при генерации описания и комментариев.",
             lang: "Язык",
             cat: "Категория",
             installTitle: "Оформление страницы установки",
@@ -508,8 +398,119 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
         },
         langs: { tr: "Turkish", ru: "Russian", en: "English" }
     }
-  };
+};
 
+const sweetBananzaData = {
+      name: 'Sweet Bananza LC',
+      developer: 'Denesik LLC',
+      category: 'Gambling',
+      description: '**App: Ultimate Gamble**\n\nExperience the thrill of the ultimate slot machine experience right in your pocket. Spin to win with amazing graphics and sound effects.\n\nOne of the standout features of Ultimate Gamble is its constant stream of promotions.',
+      rating: 4.93,
+      ratingDistribution: [70, 15, 10, 3, 2],
+      reviewsCount: '1538',
+      downloads: '50,000+',
+      size: '5Mb',
+      age: '18+',
+      iconColor: 'bg-purple-600',
+      iconUrl: '',
+      screenshots: [] as string[],
+      videoUrl: '',
+      tags: ['Best choice', 'Secure payments', 'Roulette King', 'Blackjack Master', '24/7 support'],
+      comments: [
+        { 
+            id: 1, 
+            user: 'Lessie_Kshlerin22', 
+            avatarUrl: '', // empty = generate from name
+            date: '12.12.2024', 
+            rating: 5, 
+            likes: 42,
+            text: 'Love this app! The bonuses are amazing and the interface is super user-friendly. Winning feels easier and more exciting! Highly recommend for a fun experience! 💰🎲✨',
+            developerResponse: 'Спасибо за ваш отзыв! Мы рады, что вам понравилось наше приложение. Удачи в игре!'
+        },
+        { 
+            id: 2, 
+            user: 'Barrett.Klein-Roberts', 
+            avatarUrl: '',
+            date: '10.12.2024', 
+            rating: 4, 
+            likes: 12,
+            text: 'I\'ve been using this app for a few weeks, and it\'s been an amazing experience. The interface is user-friendly and the games are engaging. I\'ve had some good wins, which has been a nice bonus. It definitely adds excitement to my downtime. Highly recommended!' 
+        },
+        { 
+            id: 3, 
+            user: 'Lonny8', 
+            avatarUrl: '',
+            date: '08.12.2024', 
+            rating: 5, 
+            likes: 8,
+            text: 'I\'ve been using this app for a while now, and the bonuses are fantastic! The user interface is' 
+        }
+      ],
+      keepReviewDatesCurrent: false,
+      offerLink: 'https://example-offer.com?click_id={user_id}',
+      passGetParams: true,
+      geoCloaking: 'all' as 'all' | 'specific',
+      androidOnly: true,
+      enableWhitepage: false,
+      language: 'Турецкий',
+      languageCode: 'tr',
+      push_ask_permission: true,
+      extra_richer_ui: true,
+      extra_auto_theme: false
+};
+
+const defaultData: Partial<PwaRow> = {
+      name: 'New Application',
+      developer: 'Developer Name',
+      category: 'Utility',
+      description: '',
+      rating: 5.0,
+      ratingDistribution: [100, 0, 0, 0, 0],
+      reviewsCount: '100',
+      downloads: '100+',
+      size: '15Mb',
+      age: '3+',
+      iconColor: 'bg-blue-500',
+      iconUrl: '',
+      screenshots: [] as string[],
+      videoUrl: '',
+      tags: [] as string[],
+      comments: [] as any[],
+      keepReviewDatesCurrent: false,
+      offerLink: '',
+      passGetParams: false,
+      geoCloaking: 'all' as 'all' | 'specific',
+      androidOnly: false,
+      enableWhitepage: false,
+      language: 'Английский',
+      languageCode: 'en',
+      
+      // Cloudflare
+      cloudflareEmail: '',
+      cloudflareApiKey: '',
+
+      // Default Analytics
+      postback_install_method: 'GET',
+      postback_open_method: 'GET',
+      postback_push_sub_method: 'GET',
+      postback_reg_method: 'GET',
+      postback_dep_method: 'GET',
+      
+      // Default Pixels
+      pixel_fb_enabled: false,
+      pixel_bigo_enabled: false,
+      pixel_kwai_enabled: false,
+      pixel_snapchat_enabled: false,
+
+      // Default Push
+      push_ask_permission: true,
+
+      // Default Extra
+      extra_richer_ui: false,
+      extra_auto_theme: false
+};
+
+export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
   const t = translations[lang];
 
   const [activeTab, setActiveTab] = useState('domain');
@@ -1298,7 +1299,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                   </>
               )}
 
-              {/* Design Tab Content (Unchanged) */}
+              {/* Design Tab Content */}
               {activeTab === 'design' && (
                   <>
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
@@ -1599,7 +1600,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                      />
                                  </div>
                                  <div>
-                                     <label className="block text-xs font-medium text-gray-400 mb-2 ml-1">{t.design.reviewsCount}</label>
+                                     <label className="block text-xs font-medium text-gray-500 mb-2 ml-1">{t.design.reviewsCount}</label>
                                      <input 
                                         type="text" 
                                         className="w-full bg-white border border-gray-200 rounded-lg p-3 text-lg font-bold text-gray-800 focus:outline-none focus:border-pwa-green"
@@ -1897,15 +1898,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                 </div>
                           </div>
                       </div>
-                  </div>
-              )}
-              
-              {/* Placeholder for tabs that might not be fully implemented yet if any */}
-              {activeTab !== 'design' && activeTab !== 'tracker' && activeTab !== 'analytics' && activeTab !== 'push' && activeTab !== 'extra' && activeTab !== 'domain' && (
-                  <div className="bg-white p-12 rounded-xl border border-gray-200 shadow-sm text-center text-gray-500 animate-in fade-in duration-300">
-                      <Settings className="mx-auto mb-4 text-gray-300 animate-spin-slow" size={48} />
-                      <p>Content for {activeTab} tab would go here.</p>
-                      <p className="text-xs mt-2">Section is under development.</p>
                   </div>
               )}
               
