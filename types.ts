@@ -34,6 +34,10 @@ export interface PwaRow {
   iconColor?: string;
   iconText?: string;
   
+  // Cloudflare Settings
+  cloudflareEmail?: string;
+  cloudflareApiKey?: string;
+  
   // Editor Data Fields
   developer?: string;
   category?: string;

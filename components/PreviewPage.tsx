@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -24,6 +25,7 @@ interface AppData {
     tags: string[];
     comments: any[];
     languageCode?: string;
+    offerLink?: string;
 }
 
 const TRANSLATIONS: Record<string, any> = {
@@ -48,10 +50,37 @@ export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
         }
     }, []);
 
+    // Effect to simulate PWA opening behavior in standalone mode
+    useEffect(() => {
+        // Check if the app is running in standalone mode (installed PWA)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+        
+        if (isStandalone && data?.offerLink) {
+             let link = data.offerLink;
+             // Simple macro replacement as per Editor logic
+             link = link.replace('{user_id}', 'pwa_user');
+             window.location.href = link;
+        }
+    }, [data]);
+
     if (!data) return <div className="p-10 text-center text-gray-500">Loading preview...</div>;
 
     const langCode = data.languageCode || 'en';
     const t = TRANSLATIONS[langCode] || TRANSLATIONS['en'];
+
+    const handleInstall = () => {
+        // In a real PWA context, the browser handles the installation.
+        // For this preview/simulator, pressing "Install" mimics the flow of 
+        // installing -> opening the app -> redirecting to the tracker URL.
+        if (data.offerLink) {
+             let link = data.offerLink;
+             link = link.replace('{user_id}', 'preview_install');
+             // Redirect to offer link to simulate "opening" the app content
+             window.location.href = link;
+        } else {
+             alert(lang === 'ru' ? 'Ссылка оффера не настроена в разделе Трекер' : 'Offer link is not configured in Tracker section');
+        }
+    };
 
     return (
         <div className="bg-white min-h-screen text-gray-900 font-sans max-w-[500px] mx-auto shadow-xl relative pb-20 overflow-x-hidden">
@@ -119,7 +148,10 @@ export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
                     </div>
                 </div>
 
-                <button className="w-full bg-[#01875f] hover:bg-[#01704e] text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-green-100 mb-8 transition-all active:scale-95">
+                <button 
+                    onClick={handleInstall}
+                    className="w-full bg-[#01875f] hover:bg-[#01704e] text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-green-100 mb-8 transition-all active:scale-95"
+                >
                     {t.install}
                 </button>
 

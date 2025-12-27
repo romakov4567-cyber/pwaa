@@ -5,7 +5,7 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight, Wand2 } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
@@ -167,6 +167,10 @@ const defaultData: Partial<PwaRow> = {
       language: 'Английский',
       languageCode: 'en',
       
+      // Cloudflare
+      cloudflareEmail: '',
+      cloudflareApiKey: '',
+
       // Default Analytics
       postback_install_method: 'GET',
       postback_open_method: 'GET',
@@ -204,15 +208,20 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             ownPrice: "Бесплатно",
             selectTitle: "Выберите понравившийся домен",
             selectDesc: "Все домены уже настроены и работают. Ничего дополнительно настраивать не нужно.",
-            ownDomainTitle: "Введите ваш домен",
-            ownDomainDesc: "Вам нужно будет добавить A-запись в настройках DNS вашего регистратора.",
+            ownDomainTitle: "Привязка домена",
+            ownDomainDesc: "Укажите домен и данные вашего аккаунта Cloudflare. Мы автоматически настроим DNS и SSL.",
             selectLabel: "Домен",
             placeholder: "Выберите домен",
             ownPlaceholder: "example.com",
+            cfEmail: "Cloudflare Email",
+            cfKey: "Global API Key",
+            cfIntegration: "Интеграция Cloudflare",
+            cfAuto: "Запустить автонастройку",
             buyBtn: "Купить домен",
             checkBtn: "Проверить настройки",
             saveContinue: "Сохранить и продолжить"
         },
+        // ... (rest of translations remain same)
         tracker: {
             offer: {
                 title: "Оффер и параметры",
@@ -357,11 +366,15 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             ownPrice: "Free",
             selectTitle: "Select a domain",
             selectDesc: "All domains are already configured and working. No additional configuration is needed.",
-            ownDomainTitle: "Enter your domain",
-            ownDomainDesc: "You will need to add an A-record in your registrar's DNS settings.",
+            ownDomainTitle: "Domain Binding",
+            ownDomainDesc: "Enter the domain and your Cloudflare account details. We will automatically configure DNS and SSL.",
             selectLabel: "Domain",
             placeholder: "Select domain",
             ownPlaceholder: "example.com",
+            cfEmail: "Cloudflare Email",
+            cfKey: "Global API Key",
+            cfIntegration: "Cloudflare Integration",
+            cfAuto: "Start Auto-setup",
             buyBtn: "Buy domain",
             checkBtn: "Check settings",
             saveContinue: "Save and continue"
@@ -585,6 +598,9 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       </button>
   );
 
+  // ... (Other handlers unchanged)
+  // ... (ProgressItem, IntegrationCard, OutgoingPostbackInput components)
+
   const ProgressItem = ({ label, status }: { label: string, status: 'done' | 'process' | 'none' }) => {
       const colors = {
           done: 'bg-green-100 text-green-700',
@@ -671,7 +687,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
        </div>
   );
 
-  // ... (Other handlers) ...
   const handleTagRemove = (tagToRemove: string) => {
       setAppData({...appData, tags: appData.tags.filter((tag: string) => tag !== tagToRemove)});
   };
@@ -805,10 +820,9 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       setLangSearchQuery('');
   };
 
-
   return (
     <div className="animate-fade-in pb-20 relative">
-      {/* Hidden file inputs for uploads */}
+      {/* ... (Hidden inputs and Modals) ... */}
       <input
         type="file"
         ref={screenshotFileInputRef}
@@ -831,7 +845,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
         accept="image/png, image/jpeg, image/webp"
       />
 
-      {/* Edit Comment Modal */}
+       {/* Edit Comment Modal */}
       {editingCommentId && tempComment && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in">
@@ -1093,38 +1107,64 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                               <button className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
                                   {t.domain.buyBtn}
                               </button>
+                              
+                              <div className="mt-12 flex justify-end">
+                                <button 
+                                    onClick={handleSaveAndContinue}
+                                    className="bg-[#1F2937] hover:bg-black text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-gray-200 flex items-center gap-2 transition-all"
+                                >
+                                    {t.domain.saveContinue}
+                                    <ArrowRight size={16} />
+                                </button>
+                              </div>
                           </>
                       ) : (
                           <>
-                              <h4 className="font-bold text-sm text-gray-800 mb-1">{t.domain.ownDomainTitle}</h4>
-                              <p className="text-xs text-gray-400 mb-4">{t.domain.ownDomainDesc}</p>
-                              
-                              <div className="mb-6 relative">
-                                  <label className="absolute -top-2 left-3 bg-white px-1 text-xs font-bold text-gray-500">{t.domain.selectLabel}</label>
-                                  <input 
-                                      type="text"
-                                      className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm focus:outline-none focus:border-pwa-green"
-                                      placeholder={t.domain.ownPlaceholder}
-                                      value={appData.domain || ''}
-                                      onChange={(e) => setAppData({...appData, domain: e.target.value})}
-                                  />
-                              </div>
+                            <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm">
+                                <h4 className="font-bold text-gray-900 mb-2">{t.domain.ownDomainTitle}</h4>
+                                <p className="text-xs text-gray-500 mb-4">{t.domain.ownDomainDesc}</p>
 
-                              <button className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                                  {t.domain.checkBtn}
-                              </button>
+                                <div className="space-y-3">
+                                    <input 
+                                        type="text" 
+                                        placeholder={t.domain.ownPlaceholder} 
+                                        value={appData.domain || ''}
+                                        onChange={(e) => setAppData({...appData, domain: e.target.value})}
+                                        className="w-full bg-[#333] border-none text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                    />
+                                    <div className="flex gap-3">
+                                        <input 
+                                            type="text" 
+                                            placeholder={t.domain.cfEmail} 
+                                            value={appData.cloudflareEmail || ''}
+                                            onChange={(e) => setAppData({...appData, cloudflareEmail: e.target.value})}
+                                            className="w-1/2 bg-[#333] border-none text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            placeholder={t.domain.cfKey} 
+                                            value={appData.cloudflareApiKey || ''}
+                                            onChange={(e) => setAppData({...appData, cloudflareApiKey: e.target.value})}
+                                            className="w-1/2 bg-[#333] border-none text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 bg-gray-50 rounded-lg p-4 border border-gray-100">
+                                    <h5 className="font-bold text-sm text-gray-900 mb-2">{t.domain.cfIntegration}</h5>
+                                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 font-medium hover:bg-gray-50 transition-colors shadow-sm">
+                                        <Wand2 size={16} /> {t.domain.cfAuto}
+                                    </button>
+                                </div>
+                                
+                                <div className="flex justify-end mt-4">
+                                     <button onClick={handleSaveAndContinue} className="bg-[#111827] text-white px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-black transition-colors shadow-md">
+                                        {t.domain.saveContinue} <ArrowRight size={16} />
+                                     </button>
+                                </div>
+                            </div>
                           </>
                       )}
-
-                      <div className="mt-12 flex justify-end">
-                          <button 
-                              onClick={handleSaveAndContinue}
-                              className="bg-[#1F2937] hover:bg-black text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-gray-200 flex items-center gap-2 transition-all"
-                          >
-                              {t.domain.saveContinue}
-                              <ArrowRight size={16} />
-                          </button>
-                      </div>
                   </div>
               )}
               
@@ -1253,7 +1293,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                   </>
               )}
 
-              {/* Design Tab Content */}
+              {/* Design Tab Content (Unchanged) */}
               {activeTab === 'design' && (
                   <>
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
@@ -1437,7 +1477,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                              </div>
                          </div>
                     </div>
-
+                    {/* ... Rest of Design Content ... */}
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                          <div className="flex justify-between items-start mb-6">
                             <div>
