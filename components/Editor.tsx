@@ -193,7 +193,7 @@ const defaultData: Partial<PwaRow> = {
 };
 
 export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
-  const translations = {
+  const translations: Record<Language, any> = {
     ru: {
         launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
         tabs: { domain: "Домен", tracker: "Трекер", design: "Оформление", analytics: "Аналитика", push: "Push-уведомления", extra: "Дополнительно" },
@@ -281,6 +281,163 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
             ratingsTitle: "Оценки и отзывы",
             rating: "Рейтинг",
             reviewsCount: "Количество отзывов",
+            commentsTitle: "Comments",
+            keepDates: "Keep review dates current",
+            keepDatesSub: "When enabled, review dates will always be current",
+            editComment: {
+                title: "Edit Review",
+                username: "Username",
+                date: "Date",
+                rating: "Rating",
+                likes: "Likes",
+                text: "Review Text",
+                devResponse: "Developer Response",
+                avatar: "Avatar",
+                uploadAvatar: "Upload Photo",
+                cancel: "Cancel",
+                save: "Save",
+                delete: "Delete",
+                genComment: "Generate comment",
+                genResponse: "Generate response"
+            },
+            process: {
+                title: "Setup Process",
+                domain: "Domain", offer: "Offer", cloak: "Geo Cloaking", white: "Whitepage", design: "Design", desc: "App Description", comments: "Comments", pixels: "Pixels",
+                status: { done: "Done", process: "In Progress", none: "Not Set" }
+            }
+        },
+        analytics: {
+            incoming: {
+                title: "Incoming Postbacks",
+                desc: "To display registrations and deposits in pwa.bot statistics, add postbacks to your affiliate network or tracker. See how to configure",
+                here: "here",
+                reg: "Postback for registrations",
+                dep: "Postback for deposits"
+            },
+            outgoing: {
+                title: "Outgoing Postbacks",
+                desc: "Here you can configure event transmission from pwa.bot to external systems.",
+                install: "Install",
+                open: "Open",
+                pushSub: "Push Subscription",
+                reg: "Registration",
+                dep: "Deposit",
+                method: "Method"
+            },
+            integrations: {
+                fb: "Integration with Facebook",
+                bigo: "Integration with Bigo Ads (Likee, imo)",
+                kwai: "Integration with KWAI Ads",
+                snapchat: "Integration with Snapchat Ads",
+                desc: "Read more about integration configuration",
+                addPixel: "Add pixel to install page",
+                addPixelDesc: "When enabled, the pixel will be placed on the PWA installation page",
+                addBtn: "Add Pixel"
+            }
+        },
+        push: {
+            title: "Push Notifications",
+            desc: "We don't know why this might be needed, but if you want, you can disable the request for permission to send PUSH notifications when installing PWA.",
+            collect: "Collect PUSH subscriptions",
+            collectSub: "When installing PWA, a system request for push notification permission will be shown."
+        },
+        extra: {
+            title: "Additional Settings",
+            desc: "Here is everything that didn't fit into other sections.",
+            richer: "Richer UI",
+            richerSub: "Beautiful system interface for displaying the application installation request.",
+            theme: "Automatic theme change",
+            themeSub: "When enabled, the theme (light/dark) will adapt to the user's device"
+        },
+        langs: { tr: "Turkish", ru: "Russian", en: "English" }
+    },
+    en: {
+        launch: "Launch", preview: "Preview", save: "Save", saved: "Saved",
+        tabs: { domain: "Domain", tracker: "Tracker", design: "Design", analytics: "Analytics", push: "Push Notifications", extra: "Extra" },
+        stopped: "Stopped",
+        draft: "Draft",
+        domain: {
+            title: "Domain",
+            desc: "A domain is required for PWA to work. You can buy one from us or use your own.",
+            buyTitle: "Buy ready domain",
+            ownTitle: "Use own domain",
+            buyPrice: "$5",
+            ownPrice: "Free",
+            selectTitle: "Select a domain you like",
+            selectDesc: "All domains are pre-configured and ready. No additional setup needed.",
+            ownDomainTitle: "Domain Linkage",
+            ownDomainDesc: "Specify domain and Cloudflare account details. We will automatically configure DNS and SSL.",
+            selectLabel: "Domain",
+            placeholder: "Select domain",
+            ownPlaceholder: "example.com",
+            cfEmail: "Cloudflare Email",
+            cfKey: "Global API Key",
+            cfIntegration: "Cloudflare Integration",
+            cfAuto: "Run auto-setup",
+            buyBtn: "Buy Domain",
+            checkBtn: "Check settings",
+            saveContinue: "Save and continue"
+        },
+        tracker: {
+            offer: {
+                title: "Offer and parameters",
+                desc: "Enter the offer link where PWA users should be redirected. See how to configure parameters in the offer link",
+                here: "here",
+                placeholder: "Offer Link",
+                macros: "Available macros:",
+                passGet: "Pass GET parameters to offer",
+                passGetSub: "When enabled, all GET parameters will be passed to the offer"
+            },
+            geo: {
+                title: "Geo Cloaking",
+                desc: "You can select one or more regions where the PWA will work. Users from other countries will be sent to the Whitepage. If Geo is selected but Whitepage is not configured or disabled, users will see a placeholder.",
+                noCloak: "Cloaking not needed. Allow all GEOs",
+                specific: "Allow only specific GEOs"
+            },
+            device: {
+                title: "Device Cloaking",
+                desc: "Traffic routing rules for different devices. If set to send to Whitepage but it's not configured, users will see a placeholder.",
+                android: "Android devices only",
+                androidSub: "When enabled, the PWA will work only for Android devices, and other traffic will be sent to the Whitepage."
+            },
+            whitepage: {
+                title: "Whitepage",
+                desc: "Here you can configure the whitepage to be displayed for inappropriate traffic.",
+                enable: "Enable whitepage",
+                enableSub: "When enabled, all inappropriate traffic will be redirected to the whitepage."
+            }
+        },
+        design: {
+            title: "Design Settings",
+            desc: "You can do everything yourself or copy the design of an existing app.",
+            copy: "Copy from Google Play",
+            manual: "Do manually",
+            langCatTitle: "PWA Language and Category",
+            langCatDesc: "Choose the primary language for all system labels on the PWA install page. The selected category affects some labels on the install page and the style of generated descriptions and comments.",
+            lang: "Language",
+            cat: "Category",
+            installTitle: "Install Page Design",
+            installSub: "App Header",
+            upload: "Upload",
+            appName: "App Name",
+            dev: "Developer",
+            size: "Size",
+            age: "Age",
+            downloads: "Downloads",
+            mediaTitle: "Images and Video",
+            mediaSub: "Upload images and videos to display on the installation page",
+            videoInfo: "The video will always be displayed first in the app screenshots",
+            descTitle: "Description and Tags",
+            descSub: "A good description and tags increase conversion. Do not neglect this.",
+            mainLang: "Primary Language",
+            descLabel: "App Description",
+            tagsLabel: "Description Tags",
+            addTags: "Add Tags",
+            genDesc: "Generate description with ChatGPT",
+            randTags: "Select random tags",
+            ratingsTitle: "Ratings and Reviews",
+            rating: "Rating",
+            reviewsCount: "Reviews Count",
             commentsTitle: "Comments",
             keepDates: "Keep review dates current",
             keepDatesSub: "When enabled, review dates will always be current",
