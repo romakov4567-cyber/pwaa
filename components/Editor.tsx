@@ -581,18 +581,20 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   const handlePreview = () => {
     // Сохраняем данные для предпросмотра
     try {
+        // Обязательно сохраняем актуальные данные перед предпросмотром
         localStorage.setItem('pwa-preview-data', JSON.stringify(appData));
+        handleSave(); // Синхронизируем с Supabase тоже
     } catch (e) {
         console.error("Local storage sync error", e);
     }
 
     // Если у приложения привязан домен, открываем его в новой вкладке
-    if (appData.domain && appData.domain.trim() !== '') {
+    if (appData.domain && appData.domain.trim() !== '' && !appData.domain.includes('localhost')) {
         const domain = appData.domain.includes('://') ? appData.domain : `https://${appData.domain}`;
         const previewUrl = `${domain}/#preview`;
         window.open(previewUrl, '_blank');
     } else {
-        // Иначе открываем внутренний предпросмотр
+        // Иначе открываем внутренний предпросмотр на текущем домене
         window.location.hash = 'preview';
     }
   };

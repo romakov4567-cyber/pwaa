@@ -6,7 +6,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Star, ArrowLeft, MoreVertical, Search, ArrowRight, Share2, Loader2 } from 'lucide-react';
-import { Language } from '../types';
+import { Language, PwaRow } from '../types';
+import { supabase } from '../supabaseClient';
 
 interface AppData {
     name: string;
@@ -63,70 +64,106 @@ const TRANSLATIONS: Record<string, any> = {
     ru: { install: "Установить", ads: "Есть реклама", purchases: "Покупки в приложении", about: "Об этом приложении", ratingsReviews: "Оценки и отзывы", reviews: "отзывов", downloads: "Скачиваний", size: "Размер", rating: "Рейтинг", dataSafety: "Безопасность данных", dataSafetyDesc: "Чтобы управлять своей безопасностью, важно понимать, как разработчики собирают и передают ваши данные.", helpful: "Полезно?", yes: "Да", no: "Нет" },
     az: { install: "Quraşdır", ads: "Reklamlar var", purchases: "Tətbiqdaxili satınalmalar", about: "Bu tətbiq haqqında", ratingsReviews: "Reytinqlər və rəylər", reviews: "rəylər", downloads: "Yükləmələr", size: "Həcm", rating: "Reytinq", dataSafety: "Məlumatların təhlükəsizliyi", dataSafetyDesc: "Təhlükəsizliyinizi idarə etmək üçün inkişaf etdiricilərin məlumatlarınızı necə topladığını anlamaq vacibdir.", helpful: "Faydalı?", yes: "Hə", no: "Yox" },
     es: { install: "Instalar", ads: "Contiene anuncios", purchases: "Compras en la aplicación", about: "Sobre esta app", ratingsReviews: "Calificaciones y opiniones", reviews: "opiniones", downloads: "Descargas", size: "Tamaño", rating: "Calificación", dataSafety: "Seguridad de los datos", dataSafetyDesc: "Para gestionar tu seguridad, es importante entender cómo los desarrolladores recopilan tus datos.", helpful: "¿Útil?", yes: "Sí", no: "No" },
-    tr: { install: "Yükle", ads: "Reklam içerir", purchases: "Uygulama içi satın alma", about: "Bu uygulama hakkında", ratingsReviews: "Puanlar ve yorumlar", reviews: "yorum", downloads: "İndirme", size: "Boyut", rating: "Puan", dataSafety: "Veri güvenliği", dataSafetyDesc: "Güvenliğinizi yönetmek için, geliştiricilerin verilerinizi nasıl topladığını ve paylaştığını anlamak önemlidir.", helpful: "Yararlı mı?", yes: "Evet", no: "Hayır" },
+    tr: { install: "Yükle", ads: "Reklam içerir", purchases: "Uygulama içi satın alma", about: "Bu uygulama hakkında", ratingsReviews: "Puanlar ve yorumlar", reviews: "yorum", downloads: "İndirme", size: "Boyut", rating: "Puan", dataSafety: "Veri güvenliği", dataSafetyDesc: "Güvenliğinizi yönetmek için, geliştiricilerin verilerinizi nasıl topladığını и paylaştığını anlamak önemlidir.", helpful: "Yararlı mı?", yes: "Evet", no: "Hayır" },
 };
 
 export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
     const [data, setData] = useState<AppData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isStandalone, setIsStandalone] = useState(false);
 
     useEffect(() => {
-        // Load data from storage (in a real app, this would fetch based on domain)
-        const stored = localStorage.getItem('pwa-preview-data');
-        if (stored) {
-            try {
-                const parsedData = JSON.parse(stored);
-                setData(parsedData);
-                
-                // Dynamically update document title and icon to simulate the PWA environment
-                if (parsedData.name) document.title = parsedData.name;
-                if (parsedData.iconUrl) {
-                    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-                    if (!link) {
-                        link = document.createElement('link');
-                        link.rel = 'icon';
-                        document.getElementsByTagName('head')[0].appendChild(link);
-                    }
-                    link.href = parsedData.iconUrl;
+        const initData = async () => {
+            setIsLoading(true);
+            
+            // 1. Try LocalStorage (for internal previews on same domain)
+            const stored = localStorage.getItem('pwa-preview-data');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    setData(parsed);
+                    updateMetadata(parsed);
+                    setIsLoading(false);
+                    return;
+                } catch (e) {
+                    console.error("Failed to parse preview data", e);
                 }
-            } catch (e) {
-                console.error("Failed to parse preview data", e);
-                setData(DEFAULT_DATA);
             }
-        } else {
-            // Fallback for when directly accessing or if storage empty
-            setData(DEFAULT_DATA);
-        }
 
-        // Listen for PWA install prompt event
+            // 2. Try Supabase lookup by domain (for custom domains)
+            const currentDomain = window.location.hostname;
+            if (!currentDomain.includes('vercel.app') && currentDomain !== 'localhost') {
+                try {
+                    // Logic: Find any user who has a PWA with this domain
+                    // Note: This is an expensive query if the table is large, but fits the current schema
+                    const { data: users, error } = await supabase
+                        .from('drumsky')
+                        .select('pwas');
+
+                    if (data && !error) {
+                        for (const userEntry of (users as any[])) {
+                            const match = (userEntry.pwas as PwaRow[]).find(p => p.domain === currentDomain);
+                            if (match) {
+                                const appData: AppData = match as any;
+                                setData(appData);
+                                updateMetadata(appData);
+                                setIsLoading(false);
+                                return;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error fetching data by domain:", err);
+                }
+            }
+
+            // 3. Fallback
+            setData(DEFAULT_DATA);
+            updateMetadata(DEFAULT_DATA);
+            setIsLoading(false);
+        };
+
+        const updateMetadata = (parsedData: any) => {
+            if (parsedData.name) document.title = parsedData.name;
+            if (parsedData.iconUrl) {
+                let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'icon';
+                    document.getElementsByTagName('head')[0].appendChild(link);
+                }
+                link.href = parsedData.iconUrl;
+            }
+        };
+
+        initData();
+
+        // PWA install logic
         const handleBeforeInstallPrompt = (e: any) => {
             e.preventDefault();
             setDeferredPrompt(e);
         };
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-        // Check if running in standalone mode (installed)
         const checkStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
         setIsStandalone(checkStandalone);
 
         return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     }, []);
 
-    // REDIRECT LOGIC: If app is installed/standalone, open the offer link
+    // REDIRECT LOGIC
     useEffect(() => {
         if (isStandalone && data?.offerLink) {
              let link = data.offerLink;
-             // Simple macro replacement
              link = link.replace('{user_id}', 'pwa_installed_user');
-             // Redirect immediately
              window.location.replace(link);
         }
     }, [isStandalone, data]);
 
-    if (!data) return <div className="min-h-screen flex items-center justify-center bg-white"><Loader2 className="animate-spin text-gray-400" size={32} /></div>;
+    if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-white"><Loader2 className="animate-spin text-pwa-green" size={48} /></div>;
+    if (!data) return null;
     
-    // If standalone, we show a loader while redirecting (or nothing if redirect is fast)
     if (isStandalone) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-white">
@@ -141,25 +178,16 @@ export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
 
     const handleInstall = async () => {
         if (deferredPrompt) {
-            // Trigger native install prompt
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
+            await deferredPrompt.userChoice;
             setDeferredPrompt(null);
         } else {
-            // Fallback for demo or if already installed/not supported
-            if (data.offerLink) {
-                 // Simulate "Download" behavior -> Usually this would be the end of the web flow
-                 // and the beginning of the installed app flow.
-                 alert(langCode === 'ru' ? 'Установка приложения началась...' : 'App installation started...');
-                 // In a real PWA builder, we might redirect to the .apk file here if it's not a pure PWA
-            }
+             alert(langCode === 'ru' ? 'Установка приложения началась...' : 'App installation started...');
         }
     };
 
     return (
         <div className="bg-white min-h-screen text-gray-900 font-sans max-w-[500px] mx-auto shadow-xl relative pb-20 overflow-x-hidden">
-            {/* Header */}
             <div className="p-4 flex items-center justify-between sticky top-0 bg-white z-20 border-b border-gray-100">
                 <div className="flex items-center gap-4">
                     <button onClick={() => window.history.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -198,7 +226,6 @@ export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
                      </div>
                 </div>
 
-                {/* Main Stats Row */}
                 <div className="flex justify-between items-center mb-8 px-2 overflow-x-auto no-scrollbar gap-8 border-b border-gray-100 pb-6">
                     <div className="flex flex-col items-center flex-shrink-0">
                         <div className="flex items-center gap-1 font-bold text-gray-800 text-base">
