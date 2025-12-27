@@ -18,8 +18,14 @@ import { supabase } from './supabaseClient';
 
 export type ViewState = 'dashboard' | 'editor' | 'analytics' | 'invoices';
 
-// Helper to determine view from URL path
-const getViewFromPath = (): ViewState => {
+// Helper to determine view from URL hash or path
+const getViewFromUrl = (): ViewState => {
+  const hash = window.location.hash.replace('#', '').split('?')[0];
+  if (['dashboard', 'editor', 'analytics', 'invoices'].includes(hash)) {
+    return hash as ViewState;
+  }
+  
+  // Fallback to path for legacy or direct access
   const path = window.location.pathname.toLowerCase();
   if (path.startsWith('/analytics')) return 'analytics';
   if (path.startsWith('/invoices')) return 'invoices';
@@ -31,8 +37,8 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
   
-  // Initialize currentView based on the current URL path
-  const [currentView, setCurrentView] = useState<ViewState>(getViewFromPath);
+  // Initialize currentView based on the current URL
+  const [currentView, setCurrentView] = useState<ViewState>(getViewFromUrl);
   
   const [hash, setHash] = useState(window.location.hash);
   const [lang, setLang] = useState<Language>('ru');
@@ -85,13 +91,16 @@ const App: React.FC = () => {
     });
 
     const handleHashChange = () => {
-      setHash(window.location.hash);
+      const currentHash = window.location.hash;
+      setHash(currentHash);
+      const view = getViewFromUrl();
+      setCurrentView(view);
     };
     window.addEventListener('hashchange', handleHashChange);
     
     // Handle Browser Back Button (Popstate)
     const handlePopState = () => {
-        setCurrentView(getViewFromPath());
+        setCurrentView(getViewFromUrl());
     };
     window.addEventListener('popstate', handlePopState);
     
@@ -120,11 +129,10 @@ const App: React.FC = () => {
           setSaveStatus('saving');
           const timer = setTimeout(async () => {
               try {
-                  // Now saving to explicit columns for better database readability
                   const payload = {
                       user_id: user.id,
-                      email: user.email, // Save email to DB so it's visible in table
-                      full_name: user.user_metadata?.full_name || '', // Save name to DB
+                      email: user.email, 
+                      full_name: user.user_metadata?.full_name || '', 
                       balance: balance,
                       pwas: rows,
                       invoices: invoices
@@ -136,10 +144,6 @@ const App: React.FC = () => {
 
                   if (error) {
                       console.error('Error saving data to Supabase:', error);
-                      // Fallback for logging Error objects which stringify to {}
-                      if (Object.keys(error).length === 0 && error.message) {
-                          console.error('Error message:', error.message);
-                      }
                       setSaveStatus('error');
                   } else {
                       setSaveStatus('saved');
@@ -157,7 +161,6 @@ const App: React.FC = () => {
   const loadUserData = async (userId: string) => {
       setSaveStatus('saving');
       try {
-          // Select explicit columns
           const { data, error } = await supabase
               .from('drumsky')
               .select('balance, pwas, invoices')
@@ -165,18 +168,16 @@ const App: React.FC = () => {
               .single();
 
           if (error) {
-              if (error.code !== 'PGRST116') { // Ignore "Row not found" error for new users
+              if (error.code !== 'PGRST116') { 
                  console.error('Error loading data:', error);
                  setSaveStatus('error');
               } else {
-                 setSaveStatus('saved'); // New user is technically "synced" as empty
+                 setSaveStatus('saved'); 
               }
-              // New user defaults
               setRows([]);
               setBalance(0);
               setInvoices([]);
           } else if (data) {
-              // Map columns to state
               setRows(data.pwas || []);
               setBalance(data.balance || 0);
               setInvoices(data.invoices || []);
@@ -200,8 +201,8 @@ const App: React.FC = () => {
       setRows([]);
       setBalance(0);
       setInvoices([]);
-      // Reset URL to root on logout
-      window.history.pushState(null, '', '/');
+      // Use hash for navigation to avoid SecurityError
+      window.location.hash = '';
       setCurrentView('dashboard');
   };
 
@@ -218,14 +219,9 @@ const App: React.FC = () => {
       setIsLangMenuOpen(false);
   };
   
-  // Helper to update URL
+  // Updated to use hash-based routing
   const updateUrl = (view: ViewState) => {
-      let path = '/';
-      if (view === 'analytics') path = '/analytics';
-      if (view === 'invoices') path = '/invoices';
-      if (view === 'editor') path = '/editor';
-      
-      window.history.pushState(null, '', path);
+      window.location.hash = view === 'dashboard' ? '' : view;
   };
 
   const handleNavigate = (view: ViewState) => {
