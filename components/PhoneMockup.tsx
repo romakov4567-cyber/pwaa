@@ -1,10 +1,11 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
 
 import React from 'react';
-import { Star, ArrowLeft, MoreVertical, Search, Share2, ThumbsUp } from 'lucide-react';
+import { Star, ArrowLeft, MoreVertical, Search, Share2 } from 'lucide-react';
 
 interface PhoneMockupProps {
     data: {
@@ -20,7 +21,7 @@ interface PhoneMockupProps {
         description: string;
         iconColor: string;
         iconUrl: string;
-        screenshots: string[];
+        screenshots?: string[];
         tags: string[];
         comments: any[];
         languageCode?: string;
@@ -35,12 +36,12 @@ const TRANSLATIONS: Record<string, any> = {
     ar: { install: "تثبيت", ads: "يحتوي على إعلانات", purchases: "عمليات شراء داخل التطبيق", about: "لمحة عن هذا التطبيق", ratingsReviews: "التقييمات والمراجعات", reviews: "مراجعة", downloads: "عمليات التنزيل", size: "الحجم", rating: "التقييم", dataSafety: "أمان البيانات", dataSafetyDesc: "لإدارة سلامتك، من المهم فهم كيفية جمع المطورين لبياناتك ومشاركتها.", helpful: "هل كان هذا مفيدًا؟", yes: "نعم", no: "لا" },
     be: { install: "Усталяваць", ads: "Утрымлівае рэкламу", purchases: "Пакупкі ў праграме", about: "Пра праграму", ratingsReviews: "Ацэнкі і водгукі", reviews: "водгукаў", downloads: "Спампоўванні", size: "Памер", rating: "Рэйтынг", dataSafety: "Бяспека даных", dataSafetyDesc: "Каб кіраваць сваёй бяспекай, важна разумець, як распрацоўшчыкі збіраюць вашы даныя.", helpful: "Карысна?", yes: "Так", no: "Не" },
     bg: { install: "Инсталиране", ads: "Съдържа реклами", purchases: "Покупки в приложението", about: "За това приложение", ratingsReviews: "Оценки и отзиви", reviews: "отзива", downloads: "Изтегляния", size: "Размер", rating: "Оценка", dataSafety: "Безопасност на данните", dataSafetyDesc: "Важно е да разберете как разработчиците събират и споделят данните ви.", helpful: "Полезно?", yes: "Да", no: "Не" },
-    bn: { install: "ইন্সটল করুন", ads: "বিজ্ঞাপন রয়েছে", purchases: "অ্যাপ-মধ্যস্থ কেনাকাটা", about: "এই অ্যাপটি সম্পর্কে", ratingsReviews: "রেটিং এবং পর্যালোচনা", reviews: "পর্যালোচনা", downloads: "ডাউনলোডগুলি", size: "আকার", rating: "রেটিং", dataSafety: "ডেটা সেফটি", dataSafetyDesc: "আপনার নিরাপত্তা ম্যানেজ করার জন্য, ডেভেলপাররা কীভাবে আপনার ডেটা সংগ্রহ করে তা বোঝা জরুরি।", helpful: "সহায়ক?", yes: "হ্যাঁ", no: "না" },
-    hu: { install: "Telepítés", ads: "Hirdetéseket tartalmaz", purchases: "Alkalmazáson belüli vásárlás", about: "Az alkalmazásról", ratingsReviews: "Értékelések és vélemények", reviews: "vélemény", downloads: "Letöltés", size: "Méret", rating: "Értékelés", dataSafety: "Adatbiztonság", dataSafetyDesc: "A biztonság kezeléséhez fontos megérteni, hogyan gyűjtik és osztják meg a fejlesztők az adatait.", helpful: "Hasznos?", yes: "Igen", no: "Nem" },
+    bn: { install: "ইন্সটল করুন", ads: "বিজ্ঞাপন রয়েছে", purchases: "অ্যাপ-মধ্যস্থ কেনাকাটা", about: "এই অ্যাপটি সম্পর্কে", ratingsReviews: "রেটিং এবং পর্যালোচনা", reviews: "পর্যালোচনা", downloads: "ডাউনলোডগুলি", size: "আকার", rating: "রেটিং", dataSafety: "ডেটা সেфটি", dataSafetyDesc: "আপনার নিরাপত্তা ম্যানেজ করার জন্য, ডেভেলপাররা কীভাবে আপনার ডেটা সংগ্রহ করে তা বোঝা জরুরি।", helpful: "সহায়ক?", yes: "হ্যাঁ", no: "না" },
+    hu: { install: "Telepítés", ads: "Hirdetéseket tartalmaz", purchases: "Alkalmazáson belüli vásárlás", about: "Az alkalmazásról", ratingsReviews: "Értékelések и vélemények", reviews: "vélemény", downloads: "Letöltés", size: "Méret", rating: "Értékelés", dataSafety: "Adatbiztonság", dataSafetyDesc: "A biztonság kezeléséhez fontos megérteni, hogyan gyűjtik és osztják meg a fejlesztők az adatait.", helpful: "Hasznos?", yes: "Igen", no: "Nem" },
     vi: { install: "Cài đặt", ads: "Chứa quảng cáo", purchases: "Mua hàng trong ứng dụng", about: "Về ứng dụng này", ratingsReviews: "Xếp hạng và bài đánh giá", reviews: "bài đánh giá", downloads: "Lượt tải xuống", size: "Kích thước", rating: "Xếp hạng", dataSafety: "An toàn dữ liệu", dataSafetyDesc: "Để quản lý sự an toàn của bạn, điều quan trọng là phải hiểu cách nhà phát triển thu thập dữ liệu.", helpful: "Hữu ích?", yes: "Có", no: "Không" },
     el: { install: "Εγκατάσταση", ads: "Περιέχει διαφημίσεις", purchases: "Αγορές εντός εφαρμογής", about: "Σχετικά με την εφαρμογή", ratingsReviews: "Αξιολογήσεις και κριτικές", reviews: "κριτικές", downloads: "Λήψεις", size: "Μέγεθος", rating: "Αξιολόγηση", dataSafety: "Ασφάλεια δεδομένων", dataSafetyDesc: "Για να διαχειριστείτε την ασφάλειά σας, είναι σημαντικό να κατανοήσετε πώς συλλέγουν οι προγραμματιστές τα δεδομένα.", helpful: "Χρήσιμο;", yes: "Ναι", no: "Όχι" },
     da: { install: "Installer", ads: "Indeholder annoncer", purchases: "Køb i appen", about: "Om denne app", ratingsReviews: "Bedømmelser og anmeldelser", reviews: "anmeldelser", downloads: "Downloads", size: "Størrelse", rating: "Bedømmelse", dataSafety: "Datasikkerhed", dataSafetyDesc: "For at administrere din sikkerhed er det vigtigt at forstå, hvordan udviklere indsamler dine data.", helpful: "Nyttigt?", yes: "Ja", no: "Nej" },
-    he: { install: "התקנה", ads: "מכיל מודעות", purchases: "רכישות בתוך האפליקציה", about: "מידע על האפליקציה", ratingsReviews: "דירוגים וביקורות", reviews: "ביקורות", downloads: "הורדות", size: "גודל", rating: "דירוג", dataSafety: "בטיחות נתונים", dataSafetyDesc: "כדי לנהל את הבטיחות שלך, חשוב להבין כיצד מפתחים אוספים ומשתפים את הנתונים שלך.", helpful: "מועיל?", yes: "כן", no: "לא" },
+    he: { install: "התקנה", ads: "מכיל מודעות", purchases: "רכישות בתוך האפلیקציה", about: "מידע על האפליקציה", ratingsReviews: "דירוגים וביקורות", reviews: "ביקורות", downloads: "הורדות", size: "גודל", rating: "דירוג", dataSafety: "בטיחות נתונים", dataSafetyDesc: "כדי לנהל את הבטיחות שלך, חשוב להבין כיצד מפתחים אוספים ומשתפים את הנתונים שלך.", helpful: "מועיל?", yes: "כן", no: "לא" },
     id: { install: "Instal", ads: "Berisi iklan", purchases: "Pembelian dalam aplikasi", about: "Tentang aplikasi ini", ratingsReviews: "Rating dan ulasan", reviews: "ulasan", downloads: "Download", size: "Ukuran", rating: "Rating", dataSafety: "Keamanan data", dataSafetyDesc: "Untuk mengelola keamanan Anda, penting untuk memahami cara pengembang mengumpulkan data Anda.", helpful: "Membantu?", yes: "Ya", no: "Tidak" },
     es: { install: "Instalar", ads: "Contiene anuncios", purchases: "Compras en la aplicación", about: "Sobre esta app", ratingsReviews: "Calificaciones y opiniones", reviews: "opiniones", downloads: "Descargas", size: "Tamaño", rating: "Calificación", dataSafety: "Seguridad de los datos", dataSafetyDesc: "Para gestionar tu seguridad, es importante entender cómo los desarrolladores recopilan tus datos.", helpful: "¿Útil?", yes: "Sí", no: "No" },
     it: { install: "Installa", ads: "Contiene annunci", purchases: "Acquisti in-app", about: "Info sull'app", ratingsReviews: "Valutazioni e recensioni", reviews: "recensioni", downloads: "Download", size: "Dimensioni", rating: "Valutazione", dataSafety: "Sicurezza dei dati", dataSafetyDesc: "Per gestire la tua sicurezza, è importante capire come gli sviluppatori raccolgono i tuoi dati.", helpful: "Utile?", yes: "Sì", no: "No" },
@@ -55,7 +56,7 @@ const TRANSLATIONS: Record<string, any> = {
     ro: { install: "Instalează", ads: "Conține anunțuri", purchases: "Achiziții în aplicație", about: "Despre această aplicație", ratingsReviews: "Evaluări și recenzii", reviews: "recenzii", downloads: "Descărcări", size: "Dimensiune", rating: "Evaluare", dataSafety: "Siguranța datelor", dataSafetyDesc: "Pentru a-ți gestiona siguranța, este important să înțelegi cum colectează dezvoltatorii datele tale.", helpful: "Util?", yes: "Da", no: "Nu" },
     th: { install: "ติดตั้ง", ads: "มีโฆษณา", purchases: "การซื้อในแอป", about: "เกี่ยวกับแอปนี้", ratingsReviews: "คะแนนและรีวิว", reviews: "รีวิว", downloads: "ดาวน์โหลด", size: "ขนาด", rating: "คะแนน", dataSafety: "ความปลอดภัยของข้อมูล", dataSafetyDesc: "เพื่อจัดการความปลอดภัยของคุณ สิ่งสำคัญคือต้องเข้าใจว่านักพัฒนารวบรวมข้อมูลของคุณอย่างไร", helpful: "มีประโยชน์ไหม", yes: "ใช่", no: "ไม่" },
     tr: { install: "Yükle", ads: "Reklam içerir", purchases: "Uygulama içi satın alma", about: "Bu uygulama hakkında", ratingsReviews: "Puanlar ve yorumlar", reviews: "yorum", downloads: "İndirme", size: "Boyut", rating: "Puan", dataSafety: "Veri güvenliği", dataSafetyDesc: "Güvenliğinizi yönetmek için, geliştiricilerin verilerinizi nasıl topladığını ve paylaştığını anlamak önemlidir.", helpful: "Yararlı mı?", yes: "Evet", no: "Hayır" },
-    uk: { install: "Установити", ads: "Містить рекламу", purchases: "Покупки в програмі", about: "Про цю програму", ratingsReviews: "Оцінки та відгуки", reviews: "відгуків", downloads: "Завантаження", size: "Розмір", rating: "Рейтинг", dataSafety: "Безпека даних", dataSafetyDesc: "Щоб керувати своєю безпекою, важливо розуміти, як розробники збирають ваші дані.", helpful: "Корисно?", yes: "Так", no: "Ні" },
+    uk: { install: "Установити", ads: "Містить рекламу", purchases: "Покупки в програмі", about: "Про цю програму", ratingsReviews: "Оцінки та відгуки", reviews: "відгуків", downloads: "Завантаження", size: "Розмір", rating: "Рэйтинг", dataSafety: "Безпека даних", dataSafetyDesc: "Щоб керувати своєю безпекою, важливо розуміти, як розробники збирають ваші дані.", helpful: "Корисно?", yes: "Так", no: "Ні" },
     fi: { install: "Asenna", ads: "Sisältää mainoksia", purchases: "Ostoja sovelluksessa", about: "Tietoja sovelluksesta", ratingsReviews: "Arviot ja arvostelut", reviews: "arvostelua", downloads: "Latauskerrat", size: "Koko", rating: "Arvio", dataSafety: "Tietoturvallisuus", dataSafetyDesc: "Turvallisuutesi hallitsemiseksi on tärkeää ymmärtää, miten kehittäjät keräävät tietojasi.", helpful: "Hyödyllinen?", yes: "Kyllä", no: "Ei" },
     fr: { install: "Installer", ads: "Contient des annonces", purchases: "Achats via l'application", about: "À propos de l'appli", ratingsReviews: "Notes et avis", reviews: "avis", downloads: "Téléchargements", size: "Taille", rating: "Note", dataSafety: "Sécurité des données", dataSafetyDesc: "Pour gérer votre sécurité, il est important de comprendre comment les développeurs collectent vos données.", helpful: "Utile ?", yes: "Oui", no: "Non" },
     hi: { install: "इंस्टॉल करें", ads: "विज्ञापन शामिल हैं", purchases: "इन-ऐप खरीदारी", about: "इस ऐप्लिकेशन के बारे में", ratingsReviews: "रेटिंग और समीक्षाएं", reviews: "समीक्षाएं", downloads: "डाउनलोड", size: "आकार", rating: "रेटिंग", dataSafety: "डेटा सुरक्षा", dataSafetyDesc: "अपनी सुरक्षा प्रबंधित करने के लिए, यह समझना महत्वपूर्ण है कि डेवलपर आपका डेटा कैसे एकत्र करते हैं।", helpful: "फ़ायदेमंद?", yes: "हां", no: "नहीं" },
@@ -151,10 +152,10 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({ data }) => {
                         {t.about} <ArrowLeft className="rotate-180 text-gray-500" size={16} />
                     </h3>
                     <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed">
-                        {data.description.replace(/\*\*/g, '')}
+                        {data.description?.replace(/\*\*/g, '')}
                     </p>
                     <div className="flex gap-2 mt-3 overflow-hidden">
-                        {data.tags.slice(0, 3).map((tag, i) => (
+                        {data.tags?.slice(0, 3).map((tag, i) => (
                             <span key={i} className="text-[10px] px-2 py-0.5 border border-gray-300 rounded-full text-gray-600 whitespace-nowrap">{tag}</span>
                         ))}
                     </div>
@@ -169,7 +170,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({ data }) => {
                         {t.dataSafetyDesc}
                     </p>
                     <div className="mt-3 bg-white border border-gray-100 rounded-lg p-3 space-y-3">
-                         <div className="flex gap-3">
+                         <div className="flex gap-4">
                             <Share2 size={16} className="text-gray-600 flex-shrink-0" />
                             <div className="text-[10px] text-gray-600">
                                 This app may share these data types with third parties
@@ -206,7 +207,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({ data }) => {
                      </div>
                      
                      <div className="space-y-4">
-                        {data.comments.map((comment) => (
+                        {data.comments?.map((comment) => (
                              <div key={comment.id} className="flex gap-3">
                                  <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
                                      {comment.avatarUrl ? (

@@ -5,7 +5,7 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Bot, Layers, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Play, Eye, Save, Copy, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
@@ -15,6 +15,17 @@ interface EditorProps {
     lang: Language;
     initialData?: PwaRow | null;
 }
+
+// Simple Bot icon for developer response
+const DevBotIcon = ({ size }: { size: number }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="11" width="18" height="10" rx="2" />
+        <circle cx="12" cy="5" r="2" />
+        <path d="M12 7v4" />
+        <line x1="8" y1="16" x2="8" y2="16" />
+        <line x1="16" y1="16" x2="16" y2="16" />
+    </svg>
+);
 
 // Extensive list of languages matching app store standards
 const LANGUAGES = [
@@ -178,71 +189,6 @@ const defaultData: Partial<PwaRow> = {
 };
 
 export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
-  const [activeTab, setActiveTab] = useState('domain');
-  const [saveBtnState, setSaveBtnState] = useState<'idle' | 'saved'>('idle');
-  const [domainMode, setDomainMode] = useState<'buy' | 'own'>('buy');
-  
-  // State for the comment being edited
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-  const [tempComment, setTempComment] = useState<any>(null);
-
-  // State for Language Search Dropdown
-  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
-  const [langSearchQuery, setLangSearchQuery] = useState('');
-  const langDropdownRef = useRef<HTMLDivElement>(null);
-
-  const [appData, setAppData] = useState<any>(() => {
-      // Logic to determine if we load the full mock data or a blank slate
-      if (initialData?.id === 'row3' || initialData?.name === 'Sweet Bananza LC') {
-          return {
-              ...defaultData, // Ensure defaults for new fields are present
-              ...sweetBananzaData,
-          };
-      }
-      return {
-          ...defaultData,
-          ...initialData, // Load all initial data if exists
-          name: initialData?.name || defaultData.name, // Ensure name is present
-      };
-  });
-
-  const screenshotFileInputRef = useRef<HTMLInputElement>(null);
-  const iconFileInputRef = useRef<HTMLInputElement>(null);
-  const commentAvatarInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-          if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
-              setIsLangDropdownOpen(false);
-          }
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSave = () => {
-      if (!initialData) return;
-      
-      const updatedRow: PwaRow = {
-          ...initialData,
-          ...appData,
-          isApp: true, // Mark as configured app
-      };
-      onSave(updatedRow);
-      
-      setSaveBtnState('saved');
-      setTimeout(() => setSaveBtnState('idle'), 2000);
-  };
-
-  const handleSaveAndContinue = () => {
-      handleSave();
-      const tabs = ['domain', 'tracker', 'design', 'analytics', 'push', 'extra'];
-      const currentIndex = tabs.indexOf(activeTab);
-      if (currentIndex < tabs.length - 1) {
-          setActiveTab(tabs[currentIndex + 1]);
-      }
-  };
-
   const translations = {
     ru: {
         launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
@@ -554,6 +500,71 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
   const t = translations[lang];
 
+  const [activeTab, setActiveTab] = useState('domain');
+  const [saveBtnState, setSaveBtnState] = useState<'idle' | 'saved'>('idle');
+  const [domainMode, setDomainMode] = useState<'buy' | 'own'>('buy');
+  
+  // State for the comment being edited
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [tempComment, setTempComment] = useState<any>(null);
+
+  // State for Language Search Dropdown
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+  const [langSearchQuery, setLangSearchQuery] = useState('');
+  const langDropdownRef = useRef<HTMLDivElement>(null);
+
+  const [appData, setAppData] = useState<any>(() => {
+      // Logic to determine if we load the full mock data or a blank slate
+      if (initialData?.id === 'row3' || initialData?.name === 'Sweet Bananza LC') {
+          return {
+              ...defaultData, // Ensure defaults for new fields are present
+              ...sweetBananzaData,
+          };
+      }
+      return {
+          ...defaultData,
+          ...initialData, // Load all initial data if exists
+          name: initialData?.name || defaultData.name, // Ensure name is present
+      };
+  });
+
+  const screenshotFileInputRef = useRef<HTMLInputElement>(null);
+  const iconFileInputRef = useRef<HTMLInputElement>(null);
+  const commentAvatarInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+          if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
+              setIsLangDropdownOpen(false);
+          }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSave = () => {
+      if (!initialData) return;
+      
+      const updatedRow: PwaRow = {
+          ...initialData,
+          ...appData,
+          isApp: true, // Mark as configured app
+      };
+      onSave(updatedRow);
+      
+      setSaveBtnState('saved');
+      setTimeout(() => setSaveBtnState('idle'), 2000);
+  };
+
+  const handleSaveAndContinue = () => {
+      handleSave();
+      const tabs = ['domain', 'tracker', 'design', 'analytics', 'push', 'extra'];
+      const currentIndex = tabs.indexOf(activeTab);
+      if (currentIndex < tabs.length - 1) {
+          setActiveTab(tabs[currentIndex + 1]);
+      }
+  };
+
   const handlePreview = () => {
     try {
         localStorage.setItem('pwa-preview-data', JSON.stringify(appData));
@@ -589,7 +600,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   }
 
   // Component for Pixel Integration Card
-  const IntegrationCard = ({ title, enabled, pixelValue, onToggle, onChange, label }: any) => (
+  const IntegrationCard = ({ title, enabled, pixelValue, onToggle, onChange }: any) => (
       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-4">
           <h3 className="font-bold text-gray-800 mb-1">{title}</h3>
           <p className="text-sm text-gray-400 mb-6">
@@ -676,10 +687,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
   const handleScreenshotFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && appData.screenshots.length < 6) {
+    if (file && (appData.screenshots?.length || 0) < 6) {
         const reader = new FileReader();
         reader.onloadend = () => {
-            const newScreenshots = [...appData.screenshots, reader.result as string];
+            const newScreenshots = [...(appData.screenshots || []), reader.result as string];
             setAppData({ ...appData, screenshots: newScreenshots });
         };
         reader.readAsDataURL(file);
@@ -690,7 +701,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   };
 
   const handleRemoveScreenshot = (indexToRemove: number) => {
-    const newScreenshots = appData.screenshots.filter((_: string, index: number) => index !== indexToRemove);
+    const newScreenshots = (appData.screenshots || []).filter((_: string, index: number) => index !== indexToRemove);
     setAppData({ ...appData, screenshots: newScreenshots });
   };
   
@@ -743,12 +754,12 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
   const saveComment = () => {
       if (!tempComment) return;
       setAppData((prev: any) => {
-          const exists = prev.comments.some((c: any) => c.id === tempComment.id);
+          const exists = (prev.comments || []).some((c: any) => c.id === tempComment.id);
           return {
               ...prev,
               comments: exists 
                   ? prev.comments.map((c: any) => c.id === tempComment.id ? tempComment : c)
-                  : [tempComment, ...prev.comments]
+                  : [tempComment, ...(prev.comments || [])]
           };
       });
       setEditingCommentId(null);
@@ -759,7 +770,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       if (!tempComment) return;
       setAppData((prev: any) => ({
           ...prev,
-          comments: prev.comments.filter((c: any) => c.id !== tempComment.id)
+          comments: (prev.comments || []).filter((c: any) => c.id !== tempComment.id)
       }));
       setEditingCommentId(null);
       setTempComment(null);
@@ -828,7 +839,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                       <h3 className="font-bold text-lg text-gray-800">{t.design.editComment.title}</h3>
                       <button onClick={cancelEditing} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
                   </div>
-                  {/* ... Modal content remains the same ... */}
                   <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
                       {/* Avatar & Name */}
                       <div className="flex gap-4 items-start">
@@ -969,7 +979,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
       {/* Top Bar */}
       <div className="flex justify-between items-start mb-6">
-          {/* ... Header content ... */}
           <div className="flex items-center gap-4">
               <button onClick={onBack} className="p-1 hover:bg-gray-200 rounded-full text-gray-500 transition-colors">
                   <ChevronLeft size={20} />
@@ -993,7 +1002,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                   <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
                       <span className="truncate">{initialData?.domain || 'playpilot.sbs'}</span>
                       <Copy size={12} className="cursor-pointer hover:text-gray-600 shrink-0" />
-                      <Eye size={12} className="cursor-pointer hover:text-gray-600 shrink-0" />
                       <span className="bg-gray-100 text-gray-500 px-1.5 rounded shrink-0">id: {initialData?.id || 'new'}</span>
                   </div>
               </div>
@@ -1454,7 +1462,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                          </div>
 
                          <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-                             {appData.screenshots.map((src: string, i: number) => (
+                             {appData.screenshots?.map((src: string, i: number) => (
                                  <div key={i} className="w-24 h-40 flex-shrink-0 relative rounded-lg overflow-hidden group shadow-sm">
                                      <img src={src} className="w-full h-full object-cover" />
                                      <button 
@@ -1464,7 +1472,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                      </button>
                                  </div>
                              ))}
-                             {appData.screenshots.length < 6 && Array.from({ length: 6 - appData.screenshots.length }).map((_: unknown, i: number) => (
+                             {((appData.screenshots?.length || 0) < 6) && Array.from({ length: 6 - (appData.screenshots?.length || 0) }).map((_: unknown, i: number) => (
                                  <div 
                                     key={`add-${i}`} 
                                     onClick={handleAddScreenshotClick}
@@ -1504,7 +1512,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                          <div className="mb-6">
                              <label className="block text-xs font-medium text-gray-400 mb-2 ml-1">{t.design.tagsLabel}</label>
                              <div className="flex flex-wrap gap-2 mb-3">
-                                 {appData.tags.map((tag: string, i: number) => (
+                                 {appData.tags?.map((tag: string, i: number) => (
                                      <div key={i} className="bg-cyan-100/50 text-cyan-800 px-3 py-1 rounded-full text-sm flex items-center gap-1.5">
                                          {tag}
                                          <button onClick={() => handleTagRemove(tag)} className="bg-cyan-200/50 rounded-full p-0.5 hover:bg-cyan-300/50"><X size={10} /></button>
@@ -1607,7 +1615,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                          </div>
 
                          <div className="space-y-4">
-                             {appData.comments.map((comment: any) => (
+                             {appData.comments?.map((comment: any) => (
                                  <div key={comment.id} className="border border-gray-200 rounded-lg p-4 relative group hover:border-pwa-green transition-colors bg-white">
                                      <button 
                                         onClick={() => startEditingComment(comment)}
@@ -1869,7 +1877,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                   <ProgressItem label={t.design.process.white} status={appData.enableWhitepage ? "done" : "none"} />
                   <ProgressItem label={t.design.process.design} status="done" />
                   <ProgressItem label={t.design.process.desc} status={appData.description ? "done" : "none"} />
-                  <ProgressItem label={t.design.process.comments} status={appData.comments.length > 0 ? "done" : "none"} />
+                  <ProgressItem label={t.design.process.comments} status={(appData.comments?.length || 0) > 0 ? "done" : "none"} />
                   <ProgressItem label={t.design.process.pixels} status={(appData.pixel_fb_enabled || appData.pixel_bigo_enabled || appData.pixel_kwai_enabled || appData.pixel_snapchat_enabled) ? "done" : "none"} />
               </div>
 
@@ -1891,14 +1899,3 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
     </div>
   );
 };
-
-// Simple Bot icon for developer response
-const DevBotIcon = ({ size }: { size: number }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="10" rx="2" />
-        <circle cx="12" cy="5" r="2" />
-        <path d="M12 7v4" />
-        <line x1="8" y1="16" x2="8" y2="16" />
-        <line x1="16" y1="16" x2="16" y2="16" />
-    </svg>
-);
