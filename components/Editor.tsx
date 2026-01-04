@@ -5,7 +5,6 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-// Added missing Copy icon to the lucide-react imports
 import { ChevronLeft, Play, Eye, Save, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight, Wand2, Copy } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
@@ -16,17 +15,6 @@ interface EditorProps {
     lang: Language;
     initialData?: PwaRow | null;
 }
-
-// Simple Bot icon for developer response
-const DevBotIcon = ({ size }: { size: number }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="10" rx="2" />
-        <circle cx="12" cy="5" r="2" />
-        <path d="M12 7v4" />
-        <line x1="8" y1="16" x2="8" y2="16" />
-        <line x1="16" y1="16" x2="16" y2="16" />
-    </svg>
-);
 
 // Extensive list of languages matching app store standards
 const LANGUAGES = [
@@ -84,7 +72,6 @@ const AVAILABLE_DOMAINS = [
 ];
 
 const translations: Record<Language, any> = {
-    // ... (translations preserved but omitted for brevity in XML, will be replaced by actual content) ...
     ru: {
         launch: "Запустить", preview: "Предпросмотр", save: "Сохранить", saved: "Сохранено",
         tabs: { domain: "Домен", tracker: "Трекер", design: "Оформление", analytics: "Аналитика", push: "Push-уведомления", extra: "Дополнительно" },
@@ -172,75 +159,76 @@ const translations: Record<Language, any> = {
             ratingsTitle: "Оценки и отзывы",
             rating: "Рейтинг",
             reviewsCount: "Количество отзывов",
-            commentsTitle: "Comments",
-            keepDates: "Keep review dates current",
-            keepDatesSub: "When enabled, review dates will always be current",
+            commentsTitle: "Комментарии",
+            addComment: "Добавить комментарий",
+            keepDates: "Держать даты отзывов актуальными",
+            keepDatesSub: "При включении, даты отзывов всегда будут актуальными",
             editComment: {
-                title: "Edit Review",
-                username: "Username",
-                date: "Date",
-                rating: "Rating",
-                likes: "Likes",
-                text: "Review Text",
-                devResponse: "Developer Response",
-                avatar: "Avatar",
-                uploadAvatar: "Upload Photo",
-                cancel: "Cancel",
-                save: "Save",
-                delete: "Delete",
-                genComment: "Generate comment",
-                genResponse: "Generate response"
+                title: "Редактировать отзыв",
+                username: "Имя пользователя",
+                date: "Дата",
+                rating: "Оценка",
+                likes: "Лайки",
+                text: "Текст отзыва",
+                devResponse: "Ответ разработчика",
+                avatar: "Аватар",
+                uploadAvatar: "Загрузить фото",
+                cancel: "Отмена",
+                save: "Сохранить",
+                delete: "Удалить",
+                genComment: "Сгенерировать отзыв",
+                genResponse: "Сгенерировать ответ"
             },
             process: {
-                title: "Setup Process",
-                domain: "Domain", offer: "Offer", cloak: "Geo Cloaking", white: "Whitepage", design: "Design", desc: "App Description", comments: "Comments", pixels: "Pixels",
-                status: { done: "Done", process: "In Progress", none: "Not Set" }
+                title: "Процесс настройки",
+                domain: "Домен", offer: "Оффер", cloak: "Гео клоакинг", white: "Whitepage", design: "Оформление", desc: "Описание", comments: "Отзывы", pixels: "Пиксели",
+                status: { done: "Готово", process: "В процессе", none: "Не заполнено" }
             }
         },
         analytics: {
             incoming: {
-                title: "Incoming Postbacks",
-                desc: "To display registrations and deposits in pwa.bot statistics, add postbacks to your affiliate network or tracker. See how to configure",
-                here: "here",
-                reg: "Postback for registrations",
-                dep: "Postback for deposits"
+                title: "Входящие постбеки",
+                desc: "Для отображения регистраций и депозитов в статистике pwa.bot, добавьте постбеки в вашу партнерскую сеть или трекер. Как настроить смотрите",
+                here: "здесь",
+                reg: "Postback на регистрации",
+                dep: "Postback на депозиты"
             },
             outgoing: {
-                title: "Outgoing Postbacks",
-                desc: "Here you can configure event transmission from pwa.bot to external systems.",
-                install: "Install",
-                open: "Open",
-                pushSub: "Push Subscription",
-                reg: "Registration",
-                dep: "Deposit",
-                method: "Method"
+                title: "Исходящие постбеки",
+                desc: "Здесь вы можете настроить передачу событий из pwa.bot во внешние системы.",
+                install: "Установка",
+                open: "Открытие",
+                pushSub: "Подписка на PUSH",
+                reg: "Регистрация",
+                dep: "Депозит",
+                method: "Метод"
             },
             integrations: {
-                fb: "Integration with Facebook",
-                bigo: "Integration with Bigo Ads (Likee, imo)",
-                kwai: "Integration with KWAI Ads",
-                snapchat: "Integration with Snapchat Ads",
-                desc: "Read more about integration configuration",
-                addPixel: "Add pixel to install page",
-                addPixelDesc: "When enabled, the pixel will be placed on the PWA installation page",
-                addBtn: "Add Pixel"
+                fb: "Интеграция с Facebook",
+                bigo: "Интеграция с Bigo Ads (Likee, imo)",
+                kwai: "Интеграция с KWAI Ads",
+                snapchat: "Интеграция с Snapchat Ads",
+                desc: "Подробнее о настройке интеграции",
+                addPixel: "Добавить пиксель на страницу установки",
+                addPixelDesc: "При включении, пиксель будет размещен на странице установки PWA",
+                addBtn: "Добавить пиксель"
             }
         },
         push: {
-            title: "Push Notifications",
-            desc: "We don't know why this might be needed, but if you want, you can disable the request for permission to send PUSH notifications when installing PWA.",
-            collect: "Collect PUSH subscriptions",
-            collectSub: "When installing PWA, a system request for push notification permission will be shown."
+            title: "PUSH-уведомления",
+            desc: "Мы не знаем зачем это может понадобиться, но если вы хотите, то можете отключить запрос разрешения на отправку PUSH уведомлений при установке PWA.",
+            collect: "Собирать подписки на PUSH",
+            collectSub: "При установке PWA будет показан системный запрос на разрешение пуш-уведомлений."
         },
         extra: {
-            title: "Additional Settings",
-            desc: "Here is everything that didn't fit into other sections.",
+            title: "Дополнительные настройки",
+            desc: "Сюда попало все, что не влезло в другие разделы.",
             richer: "Richer UI",
-            richerSub: "Beautiful system interface for displaying the application installation request.",
-            theme: "Automatic theme change",
-            themeSub: "When enabled, the theme (light/dark) will adapt to the user's device"
+            richerSub: "Красивый системный интерфейс отображения запроса на установку приложения.",
+            theme: "Автоматическая смена темы",
+            themeSub: "При включении, тема оформления (светлая/темная) будет подстраиваться под устройство пользователя"
         },
-        langs: { tr: "Turkish", ru: "Russian", en: "English" }
+        langs: { tr: "Турецкий", ru: "Русский", en: "Английский" }
     },
     en: {
         launch: "Launch", preview: "Preview", save: "Save", saved: "Saved",
@@ -330,6 +318,7 @@ const translations: Record<Language, any> = {
             rating: "Rating",
             reviewsCount: "Reviews Count",
             commentsTitle: "Comments",
+            addComment: "Add Comment",
             keepDates: "Keep review dates current",
             keepDatesSub: "When enabled, review dates will always be current",
             editComment: {
@@ -401,7 +390,6 @@ const translations: Record<Language, any> = {
     }
 };
 
-// ... (keep sweetBananzaData and defaultData as is) ...
 const sweetBananzaData = {
       name: 'Sweet Bananza LC',
       developer: 'Denesik LLC',
@@ -513,7 +501,6 @@ const defaultData: Partial<PwaRow> = {
 };
 
 export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
-  // ... (keep state, refs, and useEffects) ...
   const t = translations[lang];
 
   const [activeTab, setActiveTab] = useState('domain');
@@ -595,9 +582,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       }
   };
 
-  // ... (rest of the component render logic remains exactly the same) ...
   const handlePreview = () => {
-    // Сохраняем данные для предпросмотра
     try {
         localStorage.setItem('pwa-preview-data', JSON.stringify(appData));
         handleSave();
@@ -605,13 +590,11 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
         console.error("Local storage sync error", e);
     }
 
-    // Если у приложения привязан домен, открываем его в новой вкладке
     if (appData.domain && appData.domain.trim() !== '') {
         const domain = appData.domain.includes('://') ? appData.domain : `https://${appData.domain}`;
         const previewUrl = `${domain}/#preview`;
         window.open(previewUrl, '_blank');
     } else {
-        // Иначе открываем внутренний предпросмотр
         window.location.hash = 'preview';
     }
   };
@@ -666,7 +649,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
        </div>
   );
 
-  // ... (keep all helper handlers: handleTagRemove, handleAddTag, etc.) ...
   const handleTagRemove = (tagToRemove: string) => {
       setAppData({...appData, tags: appData.tags.filter((tag: string) => tag !== tagToRemove)});
   };
@@ -787,10 +769,8 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
       if (event.target) event.target.value = '';
   };
 
-  // ... (return JSX remains largely same, just updated handleSave references) ...
   return (
     <div className="animate-fade-in pb-20 relative">
-      {/* ... Hidden inputs ... */}
       <input type="file" ref={screenshotFileInputRef} onChange={handleScreenshotFileChange} className="hidden" accept="image/png, image/jpeg, image/webp" />
       <input type="file" ref={iconFileInputRef} onChange={handleIconFileChange} className="hidden" accept="image/png, image/jpeg, image/webp" />
       <input type="file" ref={commentAvatarInputRef} onChange={handleCommentAvatarChange} className="hidden" accept="image/png, image/jpeg, image/webp" />
@@ -804,7 +784,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                       <button onClick={cancelEditing} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
                   </div>
                   <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
-                      {/* Avatar & Name */}
                       <div className="flex gap-4 items-start">
                           <div className="flex flex-col items-center gap-2">
                               <div className="w-16 h-16 rounded-full bg-gray-100 border border-gray-200 overflow-hidden relative group">
@@ -843,7 +822,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                           </div>
                       </div>
 
-                      {/* Rating */}
                       <div>
                           <label className="block text-xs font-medium text-gray-500 mb-2">{t.design.editComment.rating}</label>
                           <div className="flex gap-2">
@@ -855,7 +833,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                           </div>
                       </div>
 
-                      {/* Text */}
                       <div>
                           <div className="flex justify-between items-center mb-1">
                               <label className="block text-xs font-medium text-gray-500">{t.design.editComment.text}</label>
@@ -866,7 +843,6 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                           <textarea className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-pwa-green focus:bg-white transition-colors min-h-[100px] resize-y" value={tempComment.text} onChange={(e) => setTempComment({...tempComment, text: e.target.value})}></textarea>
                       </div>
 
-                      {/* Developer Response */}
                       <div>
                           <div className="flex justify-between items-center mb-1">
                               <label className="block text-xs font-medium text-gray-500">{t.design.editComment.devResponse}</label>
@@ -1071,15 +1047,573 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                       )}
                   </div>
               )}
-              
-              {/* Tracker Content (and other tabs) omitted for brevity as they are unchanged from previous state */}
-              {/* ... The rest of the component body (Tracker, Design, Analytics, Push, Extra, Sidebar) ... */}
+
+              {/* Tracker Tab Content */}
               {activeTab === 'tracker' && (
-                  // ... Keep existing Tracker JSX ...
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm"><h3 className="font-bold text-gray-800 mb-1">{t.tracker.offer.title}</h3><p className="text-sm text-gray-400 mb-6">{t.tracker.offer.desc} <a href="#" className="text-pwa-green hover:underline">{t.tracker.offer.here}</a>.</p><div className="mb-4"><input type="text" placeholder={t.tracker.offer.placeholder} className="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:border-pwa-green transition-colors" value={appData.offerLink || ''} onChange={(e) => setAppData({...appData, offerLink: e.target.value})} /></div><div className="flex items-center gap-2 mb-8"><span className="text-xs text-gray-400">{t.tracker.offer.macros}</span><span className="bg-gray-100 text-gray-600 text-[11px] px-2 py-1 rounded font-mono">{"{user_id}"}</span></div><div className="flex items-center justify-between p-1"><div><div className="font-bold text-sm text-gray-800">{t.tracker.offer.passGet}</div><div className="text-xs text-gray-400 mt-1">{t.tracker.offer.passGetSub}</div></div><div className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.passGetParams ? 'bg-pwa-green' : 'bg-gray-200'}`} onClick={() => setAppData({...appData, passGetParams: !appData.passGetParams})}><div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.passGetParams ? 'translate-x-6' : ''}`}></div></div></div></div>
+                  <div className="space-y-6 animate-fade-in">
+                      {/* Offer Section */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.offer.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.tracker.offer.desc} <a href="#" className="text-pwa-green hover:underline">{t.tracker.offer.here}</a>.</p>
+                          
+                          <div className="mb-4">
+                              <input 
+                                type="text" 
+                                placeholder={t.tracker.offer.placeholder} 
+                                className="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:border-pwa-green transition-colors" 
+                                value={appData.offerLink || ''} 
+                                onChange={(e) => setAppData({...appData, offerLink: e.target.value})} 
+                              />
+                          </div>
+
+                          <div className="flex items-center gap-2 mb-8">
+                              <span className="text-xs text-gray-400">{t.tracker.offer.macros}</span>
+                              <span className="bg-gray-100 text-gray-600 text-[11px] px-2 py-1 rounded font-mono">{"{user_id}"}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between p-1">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.tracker.offer.passGet}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.tracker.offer.passGetSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.passGetParams ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, passGetParams: !appData.passGetParams})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.passGetParams ? 'translate-x-6' : ''}`}></div>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Geo Cloaking */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.geo.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.tracker.geo.desc}</p>
+                          
+                          <div className="space-y-3">
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                  <input 
+                                    type="radio" 
+                                    name="geoCloaking" 
+                                    checked={appData.geoCloaking === 'all'} 
+                                    onChange={() => setAppData({...appData, geoCloaking: 'all'})}
+                                    className="text-pwa-green focus:ring-pwa-green" 
+                                  />
+                                  <span className="text-sm text-gray-700">{t.tracker.geo.noCloak}</span>
+                              </label>
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                  <input 
+                                    type="radio" 
+                                    name="geoCloaking" 
+                                    checked={appData.geoCloaking === 'specific'} 
+                                    onChange={() => setAppData({...appData, geoCloaking: 'specific'})}
+                                    className="text-pwa-green focus:ring-pwa-green" 
+                                  />
+                                  <span className="text-sm text-gray-700">{t.tracker.geo.specific}</span>
+                              </label>
+                          </div>
+                      </div>
+
+                      {/* Device Cloaking */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.device.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.tracker.device.desc}</p>
+                          
+                           <div className="flex items-center justify-between p-1">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.tracker.device.android}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.tracker.device.androidSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.androidOnly ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, androidOnly: !appData.androidOnly})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.androidOnly ? 'translate-x-6' : ''}`}></div>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Whitepage */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.whitepage.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.tracker.whitepage.desc}</p>
+                          
+                           <div className="flex items-center justify-between p-1">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.tracker.whitepage.enable}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.tracker.whitepage.enableSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.enableWhitepage ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, enableWhitepage: !appData.enableWhitepage})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.enableWhitepage ? 'translate-x-6' : ''}`}></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               )}
-              {/* ... (Assume remaining tabs are present as in original file) ... */}
               
+              {/* Design Tab Content */}
+              {activeTab === 'design' && (
+                  <div className="space-y-6 animate-fade-in">
+                      {/* Copy vs Manual */}
+                      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
+                          <button className="flex-1 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-bold text-gray-500 hover:border-gray-400 hover:bg-gray-50 transition-all flex flex-col items-center gap-2">
+                              <Copy size={20} />
+                              {t.design.copy}
+                          </button>
+                          <button className="flex-1 py-3 border-2 border-gray-900 bg-gray-50 rounded-lg text-sm font-bold text-gray-900 flex flex-col items-center gap-2">
+                              <Dices size={20} />
+                              {t.design.manual}
+                          </button>
+                      </div>
+
+                      {/* Language and Category */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative z-20">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.design.langCatTitle}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.design.langCatDesc}</p>
+                          
+                          <div className="flex gap-4">
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{t.design.lang}</label>
+                                  <div className="relative" ref={langDropdownRef}>
+                                      <div 
+                                        className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm flex items-center justify-between cursor-pointer"
+                                        onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                                      >
+                                          <span>{appData.language || 'English'}</span>
+                                          <ChevronDown size={16} className="text-gray-400" />
+                                      </div>
+                                      
+                                      {isLangDropdownOpen && (
+                                          <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto z-50 p-2">
+                                              <input 
+                                                type="text" 
+                                                placeholder="Search..." 
+                                                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-2 focus:outline-none"
+                                                onClick={(e) => e.stopPropagation()}
+                                                onChange={(e) => setLangSearchQuery(e.target.value)}
+                                              />
+                                              {LANGUAGES.filter(l => l.name.toLowerCase().includes(langSearchQuery.toLowerCase())).map(lang => (
+                                                  <div 
+                                                    key={lang.code}
+                                                    className="px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer text-sm flex justify-between"
+                                                    onClick={() => {
+                                                        setAppData({...appData, language: lang.name, languageCode: lang.code});
+                                                        setIsLangDropdownOpen(false);
+                                                    }}
+                                                  >
+                                                      <span>{lang.name}</span>
+                                                      <span className="text-gray-400 text-xs">{lang.native}</span>
+                                                  </div>
+                                              ))}
+                                          </div>
+                                      )}
+                                  </div>
+                              </div>
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{t.design.cat}</label>
+                                  <div className="relative">
+                                      <select 
+                                          className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm focus:outline-none focus:border-pwa-green appearance-none cursor-pointer"
+                                          value={appData.category || ''}
+                                          onChange={(e) => setAppData({...appData, category: e.target.value})}
+                                      >
+                                          {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                      </select>
+                                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Header Info */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.design.installTitle}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.design.installSub}</p>
+
+                          <div className="flex gap-6 mb-6">
+                              <div className="flex flex-col gap-2">
+                                  <div className="w-24 h-24 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors relative group" onClick={handleAddIconClick}>
+                                      {appData.iconUrl ? (
+                                          <img src={appData.iconUrl} alt="icon" className="w-full h-full object-cover rounded-2xl" />
+                                      ) : (
+                                          <ImageIcon className="text-gray-400" />
+                                      )}
+                                      <div className="absolute inset-0 bg-black/50 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                          <Upload className="text-white" size={24} />
+                                      </div>
+                                  </div>
+                                  <button onClick={handleAddIconClick} className="text-xs font-bold text-blue-600 hover:underline text-center">{t.design.upload}</button>
+                              </div>
+                              <div className="flex-1 space-y-4">
+                                  <div>
+                                      <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.appName}</label>
+                                      <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.name} onChange={(e) => setAppData({...appData, name: e.target.value})} />
+                                  </div>
+                                  <div>
+                                      <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.dev}</label>
+                                      <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.developer} onChange={(e) => setAppData({...appData, developer: e.target.value})} />
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.size}</label>
+                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.size} onChange={(e) => setAppData({...appData, size: e.target.value})} />
+                              </div>
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.age}</label>
+                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.age} onChange={(e) => setAppData({...appData, age: e.target.value})} />
+                              </div>
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.downloads}</label>
+                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.downloads} onChange={(e) => setAppData({...appData, downloads: e.target.value})} />
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Media */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.design.mediaTitle}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.design.mediaSub}</p>
+
+                          <div className="grid grid-cols-4 gap-4 mb-4">
+                               {appData.screenshots?.map((src: string, index: number) => (
+                                   <div key={index} className="relative aspect-[9/16] rounded-lg overflow-hidden group">
+                                       <img src={src} className="w-full h-full object-cover" />
+                                       <button 
+                                            onClick={() => handleRemoveScreenshot(index)}
+                                            className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                                       >
+                                           <X size={14} />
+                                       </button>
+                                   </div>
+                               ))}
+                               {(appData.screenshots?.length || 0) < 6 && (
+                                   <div 
+                                        className="aspect-[9/16] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors"
+                                        onClick={handleAddScreenshotClick}
+                                   >
+                                       <Plus size={24} className="mb-2" />
+                                       <span className="text-xs font-bold">{t.design.upload}</span>
+                                   </div>
+                               )}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-gray-400">
+                              <Info size={14} /> {t.design.videoInfo}
+                          </div>
+                      </div>
+
+                      {/* Description */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.design.descTitle}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.design.descSub}</p>
+
+                          <div className="mb-6">
+                              <div className="flex justify-between items-center mb-2">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase">{t.design.descLabel}</label>
+                                  <button className="flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded transition-colors">
+                                      <Sparkles size={12} /> {t.design.genDesc}
+                                  </button>
+                              </div>
+                              <textarea 
+                                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-pwa-green min-h-[120px] resize-y"
+                                value={appData.description}
+                                onChange={(e) => setAppData({...appData, description: e.target.value})}
+                              ></textarea>
+                          </div>
+
+                          <div>
+                              <div className="flex justify-between items-center mb-2">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase">{t.design.tagsLabel}</label>
+                                  <button className="flex items-center gap-1 text-[10px] font-bold text-gray-500 hover:text-gray-700 bg-gray-100 px-2 py-1 rounded transition-colors">
+                                      <Dices size={12} /> {t.design.randTags}
+                                  </button>
+                              </div>
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                  {appData.tags?.map((tag: string) => (
+                                      <div key={tag} className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium group">
+                                          {tag}
+                                          <button onClick={() => handleTagRemove(tag)} className="text-gray-400 hover:text-red-500 ml-1"><X size={12} /></button>
+                                      </div>
+                                  ))}
+                                  <button 
+                                    onClick={handleAddTag}
+                                    className="flex items-center gap-1 border border-dashed border-gray-300 text-gray-500 hover:text-gray-700 hover:border-gray-400 px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                                  >
+                                      <Plus size={12} /> {t.design.addTags}
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Ratings */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-6">{t.design.ratingsTitle}</h3>
+                          
+                          <div className="flex gap-6 items-start">
+                              <div className="w-32">
+                                  <div className="text-5xl font-bold text-gray-900 mb-1">{appData.rating}</div>
+                                  <div className="flex text-yellow-400 mb-2">
+                                      {[1,2,3,4,5].map(i => <Star key={i} size={16} fill="currentColor" />)}
+                                  </div>
+                                  <div className="text-xs text-gray-400 font-bold">{appData.reviewsCount} Reviews</div>
+                              </div>
+                              
+                              <div className="flex-1 space-y-2">
+                                  {[5,4,3,2,1].map((r, i) => (
+                                      <div key={r} className="flex items-center gap-3">
+                                          <span className="text-xs font-bold text-gray-400 w-2">{r}</span>
+                                          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                              <div 
+                                                className="h-full bg-green-500 rounded-full" 
+                                                style={{ width: `${appData.ratingDistribution?.[i] || 0}%` }}
+                                              ></div>
+                                          </div>
+                                          <input 
+                                            type="range" 
+                                            min="0" 
+                                            max="100" 
+                                            value={appData.ratingDistribution?.[i] || 0}
+                                            onChange={(e) => handleDistributionChange(i, Number(e.target.value))}
+                                            className="w-20"
+                                          />
+                                      </div>
+                                  ))}
+                              </div>
+                          </div>
+                          
+                          <div className="flex gap-4 mt-6">
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.rating}</label>
+                                  <input type="number" step="0.1" max="5" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.rating} onChange={(e) => setAppData({...appData, rating: Number(e.target.value)})} />
+                              </div>
+                              <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.reviewsCount}</label>
+                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.reviewsCount} onChange={(e) => setAppData({...appData, reviewsCount: e.target.value})} />
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Comments */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <div className="flex justify-between items-center mb-6">
+                              <h3 className="font-bold text-gray-800">{t.design.commentsTitle}</h3>
+                              <button onClick={handleAddComment} className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-black transition-colors">
+                                  <Plus size={14} /> {t.design.addComment}
+                              </button>
+                          </div>
+
+                           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl mb-6">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.design.keepDates}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.design.keepDatesSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.keepReviewDatesCurrent ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, keepReviewDatesCurrent: !appData.keepReviewDatesCurrent})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.keepReviewDatesCurrent ? 'translate-x-6' : ''}`}></div>
+                              </div>
+                          </div>
+
+                          <div className="space-y-4">
+                              {appData.comments?.map((comment: any) => (
+                                  <div key={comment.id} className="p-4 border border-gray-100 rounded-xl hover:border-gray-300 transition-colors bg-white group relative">
+                                      <div className="flex justify-between items-start mb-2">
+                                          <div className="flex items-center gap-3">
+                                               <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden">
+                                                   {comment.avatarUrl ? (
+                                                       <img src={comment.avatarUrl} className="w-full h-full object-cover" />
+                                                   ) : (
+                                                       <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user}`} className="w-full h-full" />
+                                                   )}
+                                               </div>
+                                               <div>
+                                                   <div className="text-sm font-bold text-gray-900">{comment.user}</div>
+                                                   <div className="text-xs text-gray-400">{comment.date}</div>
+                                               </div>
+                                          </div>
+                                          <div className="flex text-yellow-400 gap-0.5">
+                                              {[...Array(5)].map((_, i) => (
+                                                  <Star key={i} size={12} fill={i < comment.rating ? "currentColor" : "none"} className={i < comment.rating ? "" : "text-gray-200"} />
+                                              ))}
+                                          </div>
+                                      </div>
+                                      <p className="text-sm text-gray-600 line-clamp-2">{comment.text}</p>
+                                      
+                                      <button 
+                                        onClick={() => startEditingComment(comment)}
+                                        className="absolute top-4 right-4 p-2 bg-gray-100 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-gray-200 transition-all text-gray-600"
+                                      >
+                                          <Settings size={16} />
+                                      </button>
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {/* Analytics Tab Content */}
+              {activeTab === 'analytics' && (
+                  <div className="space-y-6 animate-fade-in">
+                      {/* Incoming Postbacks */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.analytics.incoming.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.analytics.incoming.desc} <a href="#" className="text-pwa-green hover:underline">{t.analytics.incoming.here}</a>.</p>
+                          
+                          <div className="space-y-4">
+                              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs text-gray-600 break-all">
+                                  <span className="text-gray-400 select-none block mb-1 text-[10px] font-sans font-bold uppercase">{t.analytics.incoming.reg}</span>
+                                  https://pwa.bot/api/postback?click_id={'{click_id}'}&event=reg
+                              </div>
+                              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs text-gray-600 break-all">
+                                  <span className="text-gray-400 select-none block mb-1 text-[10px] font-sans font-bold uppercase">{t.analytics.incoming.dep}</span>
+                                  https://pwa.bot/api/postback?click_id={'{click_id}'}&event=dep&amount={'{amount}'}
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Outgoing Postbacks */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">{t.analytics.outgoing.title}</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.analytics.outgoing.desc}</p>
+                          
+                          <OutgoingPostbackInput 
+                            label={t.analytics.outgoing.install} 
+                            value={appData.postback_install} 
+                            method={appData.postback_install_method}
+                            onChangeValue={(v: string) => setAppData({...appData, postback_install: v})}
+                            onChangeMethod={(v: string) => setAppData({...appData, postback_install_method: v})}
+                          />
+                          <OutgoingPostbackInput 
+                            label={t.analytics.outgoing.open} 
+                            value={appData.postback_open} 
+                            method={appData.postback_open_method}
+                            onChangeValue={(v: string) => setAppData({...appData, postback_open: v})}
+                            onChangeMethod={(v: string) => setAppData({...appData, postback_open_method: v})}
+                          />
+                          <OutgoingPostbackInput 
+                            label={t.analytics.outgoing.pushSub} 
+                            value={appData.postback_push_sub} 
+                            method={appData.postback_push_sub_method}
+                            onChangeValue={(v: string) => setAppData({...appData, postback_push_sub: v})}
+                            onChangeMethod={(v: string) => setAppData({...appData, postback_push_sub_method: v})}
+                          />
+                          <OutgoingPostbackInput 
+                            label={t.analytics.outgoing.reg} 
+                            value={appData.postback_reg} 
+                            method={appData.postback_reg_method}
+                            onChangeValue={(v: string) => setAppData({...appData, postback_reg: v})}
+                            onChangeMethod={(v: string) => setAppData({...appData, postback_reg_method: v})}
+                          />
+                          <OutgoingPostbackInput 
+                            label={t.analytics.outgoing.dep} 
+                            value={appData.postback_dep} 
+                            method={appData.postback_dep_method}
+                            onChangeValue={(v: string) => setAppData({...appData, postback_dep: v})}
+                            onChangeMethod={(v: string) => setAppData({...appData, postback_dep_method: v})}
+                          />
+                      </div>
+
+                      {/* Integrations */}
+                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h3 className="font-bold text-gray-800 mb-1">Integrations</h3>
+                          <p className="text-sm text-gray-400 mb-6">{t.analytics.integrations.desc}</p>
+
+                          <div className="space-y-4">
+                              {[
+                                  { id: 'fb', label: t.analytics.integrations.fb, enabled: appData.pixel_fb_enabled, val: appData.pixel_fb_id },
+                                  { id: 'bigo', label: t.analytics.integrations.bigo, enabled: appData.pixel_bigo_enabled, val: appData.pixel_bigo_id },
+                                  { id: 'kwai', label: t.analytics.integrations.kwai, enabled: appData.pixel_kwai_enabled, val: appData.pixel_kwai_id },
+                                  { id: 'snapchat', label: t.analytics.integrations.snapchat, enabled: appData.pixel_snapchat_enabled, val: appData.pixel_snapchat_id },
+                              ].map((item: any) => (
+                                  <div key={item.id} className="border border-gray-200 rounded-xl p-4 transition-all bg-white hover:border-gray-300">
+                                      <div className="flex items-center justify-between mb-3">
+                                          <div className="font-bold text-sm text-gray-800">{item.label}</div>
+                                          <div 
+                                            className={`w-10 h-5 rounded-full p-0.5 cursor-pointer transition-colors ${item.enabled ? 'bg-pwa-green' : 'bg-gray-200'}`}
+                                            onClick={() => setAppData({...appData, [`pixel_${item.id}_enabled`]: !item.enabled})}
+                                          >
+                                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${item.enabled ? 'translate-x-5' : ''}`}></div>
+                                          </div>
+                                      </div>
+                                      {item.enabled && (
+                                          <div className="animate-in fade-in slide-in-from-top-2">
+                                              <input 
+                                                type="text" 
+                                                placeholder="Pixel ID" 
+                                                value={item.val || ''}
+                                                onChange={(e) => setAppData({...appData, [`pixel_${item.id}_id`]: e.target.value})}
+                                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pwa-green" 
+                                              />
+                                          </div>
+                                      )}
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {/* Push Tab Content */}
+              {activeTab === 'push' && (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
+                      <h3 className="font-bold text-gray-800 mb-1">{t.push.title}</h3>
+                      <p className="text-sm text-gray-400 mb-6">{t.push.desc}</p>
+                      
+                       <div className="flex items-center justify-between p-1">
+                          <div>
+                              <div className="font-bold text-sm text-gray-800">{t.push.collect}</div>
+                              <div className="text-xs text-gray-400 mt-1">{t.push.collectSub}</div>
+                          </div>
+                          <div 
+                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.push_ask_permission ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                            onClick={() => setAppData({...appData, push_ask_permission: !appData.push_ask_permission})}
+                          >
+                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.push_ask_permission ? 'translate-x-6' : ''}`}></div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {/* Extra Tab Content */}
+              {activeTab === 'extra' && (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
+                      <h3 className="font-bold text-gray-800 mb-1">{t.extra.title}</h3>
+                      <p className="text-sm text-gray-400 mb-6">{t.extra.desc}</p>
+                      
+                       <div className="flex items-center justify-between p-1 mb-6 border-b border-gray-50 pb-6">
+                          <div>
+                              <div className="font-bold text-sm text-gray-800">{t.extra.richer}</div>
+                              <div className="text-xs text-gray-400 mt-1">{t.extra.richerSub}</div>
+                          </div>
+                          <div 
+                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_richer_ui ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                            onClick={() => setAppData({...appData, extra_richer_ui: !appData.extra_richer_ui})}
+                          >
+                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_richer_ui ? 'translate-x-6' : ''}`}></div>
+                          </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-1">
+                          <div>
+                              <div className="font-bold text-sm text-gray-800">{t.extra.theme}</div>
+                              <div className="text-xs text-gray-400 mt-1">{t.extra.themeSub}</div>
+                          </div>
+                          <div 
+                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_auto_theme ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                            onClick={() => setAppData({...appData, extra_auto_theme: !appData.extra_auto_theme})}
+                          >
+                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_auto_theme ? 'translate-x-6' : ''}`}></div>
+                          </div>
+                      </div>
+                  </div>
+              )}
           </div>
 
           {/* Sidebar / Preview Area */}

@@ -64,10 +64,20 @@ const App: React.FC = () => {
   useEffect(() => {
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
       const hostname = window.location.hostname;
+      const searchParams = new URLSearchParams(window.location.search);
       
-      // Define domains that should show the Admin Panel (Builder)
-      // Modify 'pwa.bot' to your actual main domain if different
-      const isBuilderDomain = hostname.includes('localhost') || hostname.includes('.vercel.app') || hostname === 'pwa.bot' || hostname === 'www.pwa.bot';
+      // Logic to determine if we are in "Builder Mode" (Admin Panel) or "PWA Mode" (The App itself)
+      // 1. Localhost is always Builder
+      // 2. Specific domain 'pwa.bot' is Builder
+      // 3. Explicit ?mode=builder param forces Builder
+      // 4. EVERYTHING ELSE (including vercel.app subdomains, AI Studio previews, custom domains) is PWA Mode
+      
+      let isBuilderDomain = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'pwa.bot' || hostname === 'www.pwa.bot';
+      
+      // Check query param override
+      if (searchParams.get('mode') === 'builder') {
+          isBuilderDomain = true;
+      }
 
       // If it's a standalone install OR a custom user domain (not the builder), show PWA Mode
       // We also allow manual preview via hash on the builder domain

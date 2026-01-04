@@ -93,17 +93,35 @@ export const PreviewPage: React.FC<{ lang: Language }> = ({ lang }) => {
 
             // 2. Try Supabase lookup by domain (for custom domains)
             const currentDomain = window.location.hostname;
-            if (!currentDomain.includes('vercel.app') && currentDomain !== 'localhost') {
+            
+            // Only skip lookup for localhost. Vercel domains are allowed for previews.
+            if (currentDomain !== 'localhost') {
                 try {
+                    // Normalize current domain (remove www.)
+                    const normalizedCurrentDomain = currentDomain.replace(/^www\./, '').toLowerCase();
+
                     // Logic: Find any user who has a PWA with this domain
                     // Note: This is an expensive query if the table is large, but fits the current schema
                     const { data: users, error } = await supabase
                         .from('drumsky')
                         .select('pwas');
 
-                    if (data && !error) {
+                    if (users && !error) {
                         for (const userEntry of (users as any[])) {
-                            const match = (userEntry.pwas as PwaRow[]).find(p => p.domain === currentDomain);
+                            const pwas = userEntry.pwas as PwaRow[];
+                            if (!Array.isArray(pwas)) continue;
+
+                            const match = pwas.find(p => {
+                                if (!p.domain) return false;
+                                // Normalize stored domain (remove protocol and www.)
+                                const normalizedStoredDomain = p.domain
+                                    .replace(/^https?:\/\//, '')
+                                    .replace(/^www\./, '')
+                                    .toLowerCase();
+                                    
+                                return normalizedStoredDomain === normalizedCurrentDomain;
+                            });
+
                             if (match) {
                                 const appData: AppData = match as any;
                                 setData(appData);
