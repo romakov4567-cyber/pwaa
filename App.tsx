@@ -60,13 +60,18 @@ const App: React.FC = () => {
   const langMenuRef = useRef<HTMLDivElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Check for Standalone Mode on Mount
+  // Check for Standalone Mode OR Custom Domain on Mount
   useEffect(() => {
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+      const hostname = window.location.hostname;
       
-      // Removed hostname check to prevent lockout in dev environments.
-      // Now PWA mode only activates if explicitly previewing or installed.
-      if (isStandalone || window.location.hash === '#preview') {
+      // Define domains that should show the Admin Panel (Builder)
+      // Modify 'pwa.bot' to your actual main domain if different
+      const isBuilderDomain = hostname.includes('localhost') || hostname.includes('.vercel.app') || hostname === 'pwa.bot' || hostname === 'www.pwa.bot';
+
+      // If it's a standalone install OR a custom user domain (not the builder), show PWA Mode
+      // We also allow manual preview via hash on the builder domain
+      if (isStandalone || (!isBuilderDomain) || window.location.hash === '#preview') {
           setIsPwaMode(true);
       }
   }, []);
@@ -109,9 +114,8 @@ const App: React.FC = () => {
       setHash(currentHash);
       if (currentHash === '#preview') {
           setIsPwaMode(true);
-      } else {
-          setIsPwaMode(false);
-      }
+      } 
+      // Note: We don't automatically set isPwaMode to false here to protect custom domains
       const view = getViewFromUrl();
       setCurrentView(view);
     };
