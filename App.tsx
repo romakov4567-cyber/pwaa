@@ -72,7 +72,8 @@ const App: React.FC = () => {
       // 3. Explicit ?mode=builder param forces Builder
       // 4. EVERYTHING ELSE (including vercel.app subdomains, AI Studio previews, custom domains) is PWA Mode
       
-      let isBuilderDomain = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'pwa.bot' || hostname === 'www.pwa.bot';
+      // UPDATED: Added vercel.app to builder domains to prevent accidental PWA mode on preview deployments
+      let isBuilderDomain = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'pwa.bot' || hostname === 'www.pwa.bot' || hostname.includes('vercel.app');
       
       // Check query param override
       if (searchParams.get('mode') === 'builder') {
@@ -124,7 +125,14 @@ const App: React.FC = () => {
       setHash(currentHash);
       if (currentHash === '#preview') {
           setIsPwaMode(true);
-      } 
+      } else if (isPwaMode && currentHash !== '#preview') {
+          // Allow returning to builder if on builder domain
+           const hostname = window.location.hostname;
+           const isBuilderDomain = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'pwa.bot' || hostname === 'www.pwa.bot' || hostname.includes('vercel.app');
+           if (isBuilderDomain) {
+               setIsPwaMode(false);
+           }
+      }
       // Note: We don't automatically set isPwaMode to false here to protect custom domains
       const view = getViewFromUrl();
       setCurrentView(view);
@@ -154,7 +162,7 @@ const App: React.FC = () => {
         window.removeEventListener('popstate', handlePopState);
         document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isPwaMode]);
 
   // Save data whenever it changes and user is logged in (Debounced)
   useEffect(() => {
