@@ -5,7 +5,7 @@
 */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Play, Eye, Save, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight, Wand2, Copy } from 'lucide-react';
+import { ChevronLeft, Play, Eye, Save, Globe, MousePointer, Monitor, MessageSquare, BarChart, Settings, Plus, X, Dices, Image as ImageIcon, Sparkles, Star, MoreVertical, Upload, Trash2, Calendar, ThumbsUp, Info, Search, ChevronDown, MessageCircle, Check, Layers, ArrowRight, Wand2, Copy, AlertCircle } from 'lucide-react';
 import { PhoneMockup } from './PhoneMockup';
 import { Language, PwaRow } from '../types';
 
@@ -500,12 +500,46 @@ const defaultData: Partial<PwaRow> = {
       extra_auto_theme: false
 };
 
+// Reusable UI Components
+const Section = ({ title, desc, children, className = "" }: any) => (
+    <div className={`bg-white p-6 rounded-2xl border border-gray-200 shadow-sm ${className}`}>
+        <h3 className="font-bold text-gray-900 mb-1 text-lg">{title}</h3>
+        {desc && <p className="text-sm text-gray-500 mb-6">{desc}</p>}
+        {children}
+    </div>
+);
+
+const Label = ({ children }: any) => (
+    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">{children}</label>
+);
+
+const Input = ({ label, className, ...props }: any) => (
+    <div className={className}>
+        {label && <Label>{label}</Label>}
+        <input 
+          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-900 focus:ring-0 transition-all placeholder-gray-300"
+          {...props} 
+        />
+    </div>
+);
+
+const TextArea = ({ label, className, ...props }: any) => (
+    <div className={className}>
+        {label && <Label>{label}</Label>}
+        <textarea 
+          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-3 text-sm text-gray-900 focus:outline-none focus:border-gray-900 focus:ring-0 transition-all placeholder-gray-300 min-h-[100px] resize-y"
+          {...props} 
+        />
+    </div>
+);
+
 export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialData }) => {
   const t = translations[lang];
 
   const [activeTab, setActiveTab] = useState('domain');
   const [saveBtnState, setSaveBtnState] = useState<'idle' | 'saved'>('idle');
   const [domainMode, setDomainMode] = useState<'buy' | 'own'>('buy');
+  const [designMode, setDesignMode] = useState<'copy' | 'manual'>('manual');
   
   // State for the comment being edited
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -630,7 +664,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
            <div className="flex-1">
                <input 
                     type="text" 
-                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pwa-green placeholder-gray-300"
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pwa-green placeholder-gray-300 transition-all"
                     placeholder={`URL для события ${label}`}
                     value={value || ''}
                     onChange={(e) => onChangeValue(e.target.value)}
@@ -805,25 +839,32 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                           </div>
                           
                           <div className="flex-1 space-y-4">
-                              <div>
-                                  <label className="block text-xs font-medium text-gray-500 mb-1">{t.design.editComment.username}</label>
-                                  <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-pwa-green focus:bg-white transition-colors" value={tempComment.user} onChange={(e) => setTempComment({...tempComment, user: e.target.value})} />
-                              </div>
+                              <Input 
+                                label={t.design.editComment.username} 
+                                value={tempComment.user} 
+                                onChange={(e: any) => setTempComment({...tempComment, user: e.target.value})} 
+                              />
                               <div className="flex gap-4">
-                                  <div className="flex-1">
-                                    <label className="block text-xs font-medium text-gray-500 mb-1">{t.design.editComment.date}</label>
-                                    <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-pwa-green focus:bg-white transition-colors" value={tempComment.date} onChange={(e) => setTempComment({...tempComment, date: e.target.value})} placeholder="DD.MM.YYYY" />
-                                  </div>
-                                  <div className="w-24">
-                                      <label className="block text-xs font-medium text-gray-500 mb-1">{t.design.editComment.likes}</label>
-                                      <input type="number" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-pwa-green focus:bg-white transition-colors" value={tempComment.likes} onChange={(e) => setTempComment({...tempComment, likes: Number(e.target.value)})} />
-                                  </div>
+                                  <Input 
+                                    label={t.design.editComment.date} 
+                                    value={tempComment.date} 
+                                    onChange={(e: any) => setTempComment({...tempComment, date: e.target.value})} 
+                                    placeholder="DD.MM.YYYY"
+                                    className="flex-1"
+                                  />
+                                  <Input 
+                                    label={t.design.editComment.likes} 
+                                    value={tempComment.likes} 
+                                    onChange={(e: any) => setTempComment({...tempComment, likes: Number(e.target.value)})} 
+                                    type="number"
+                                    className="w-24"
+                                  />
                               </div>
                           </div>
                       </div>
 
                       <div>
-                          <label className="block text-xs font-medium text-gray-500 mb-2">{t.design.editComment.rating}</label>
+                          <Label>{t.design.editComment.rating}</Label>
                           <div className="flex gap-2">
                               {[1, 2, 3, 4, 5].map((star) => (
                                   <button key={star} type="button" onClick={() => setTempComment({...tempComment, rating: star})} className="focus:outline-none">
@@ -835,22 +876,27 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
 
                       <div>
                           <div className="flex justify-between items-center mb-1">
-                              <label className="block text-xs font-medium text-gray-500">{t.design.editComment.text}</label>
+                              <Label>{t.design.editComment.text}</Label>
                               <button className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 hover:text-gray-600 transition-colors">
                                   <Sparkles size={12} /> {t.design.editComment.genComment}
                               </button>
                           </div>
-                          <textarea className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-pwa-green focus:bg-white transition-colors min-h-[100px] resize-y" value={tempComment.text} onChange={(e) => setTempComment({...tempComment, text: e.target.value})}></textarea>
+                          <TextArea value={tempComment.text} onChange={(e: any) => setTempComment({...tempComment, text: e.target.value})} />
                       </div>
 
                       <div>
                           <div className="flex justify-between items-center mb-1">
-                              <label className="block text-xs font-medium text-gray-500">{t.design.editComment.devResponse}</label>
+                              <Label>{t.design.editComment.devResponse}</Label>
                               <button className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 hover:text-gray-600 transition-colors">
                                   <Sparkles size={12} /> {t.design.editComment.genResponse}
                               </button>
                           </div>
-                          <textarea className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-pwa-green focus:bg-white transition-colors min-h-[80px] resize-y" value={tempComment.developerResponse || ''} onChange={(e) => setTempComment({...tempComment, developerResponse: e.target.value})} placeholder={lang === 'ru' ? 'Введите ваш ответ...' : 'Enter your reply...'}></textarea>
+                          <TextArea 
+                            value={tempComment.developerResponse || ''} 
+                            onChange={(e: any) => setTempComment({...tempComment, developerResponse: e.target.value})} 
+                            placeholder={lang === 'ru' ? 'Введите ваш ответ...' : 'Enter your reply...'}
+                            className="min-h-[80px]"
+                          />
                       </div>
 
                   </div>
@@ -938,10 +984,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
               
               {/* Domain Tab Content */}
               {activeTab === 'domain' && (
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
-                      <h3 className="font-bold text-gray-800 mb-1">{t.domain.title}</h3>
-                      <p className="text-sm text-gray-400 mb-6">{t.domain.desc}</p>
-
+                  <Section title={t.domain.title} desc={t.domain.desc}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                           <div 
                               className={`border-2 rounded-xl p-6 cursor-pointer transition-all ${domainMode === 'buy' ? 'border-gray-900 bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}
@@ -968,10 +1011,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                               <p className="text-xs text-gray-400 mb-4">{t.domain.selectDesc}</p>
                               
                               <div className="mb-6 relative">
-                                  <label className="absolute -top-2 left-3 bg-white px-1 text-xs font-bold text-gray-500">{t.domain.selectLabel}</label>
+                                  <Label>{t.domain.selectLabel}</Label>
                                   <div className="relative">
                                       <select 
-                                          className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm focus:outline-none focus:border-pwa-green appearance-none cursor-pointer"
+                                          className="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-white text-sm focus:outline-none focus:border-gray-900 appearance-none cursor-pointer"
                                           value={appData.domain || ''}
                                           onChange={(e) => setAppData({...appData, domain: e.target.value})}
                                       >
@@ -1004,28 +1047,24 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                 <h4 className="font-bold text-gray-900 mb-2">{t.domain.ownDomainTitle}</h4>
                                 <p className="text-xs text-gray-500 mb-4">{t.domain.ownDomainDesc}</p>
 
-                                <div className="space-y-3">
-                                    <input 
-                                        type="text" 
+                                <div className="space-y-4">
+                                    <Input 
                                         placeholder={t.domain.ownPlaceholder} 
                                         value={appData.domain || ''}
-                                        onChange={(e) => setAppData({...appData, domain: e.target.value})}
-                                        className="w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors"
+                                        onChange={(e: any) => setAppData({...appData, domain: e.target.value})}
                                     />
-                                    <div className="flex gap-3">
-                                        <input 
-                                            type="text" 
+                                    <div className="flex gap-4">
+                                        <Input 
                                             placeholder={t.domain.cfEmail} 
                                             value={appData.cloudflareEmail || ''}
-                                            onChange={(e) => setAppData({...appData, cloudflareEmail: e.target.value})}
-                                            className="w-1/2 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors"
+                                            onChange={(e: any) => setAppData({...appData, cloudflareEmail: e.target.value})}
+                                            className="w-1/2"
                                         />
-                                        <input 
-                                            type="text" 
+                                        <Input 
                                             placeholder={t.domain.cfKey} 
                                             value={appData.cloudflareApiKey || ''}
-                                            onChange={(e) => setAppData({...appData, cloudflareApiKey: e.target.value})}
-                                            className="w-1/2 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors"
+                                            onChange={(e: any) => setAppData({...appData, cloudflareApiKey: e.target.value})}
+                                            className="w-1/2"
                                         />
                                     </div>
                                 </div>
@@ -1045,24 +1084,19 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                             </div>
                           </>
                       )}
-                  </div>
+                  </Section>
               )}
 
               {/* Tracker Tab Content */}
               {activeTab === 'tracker' && (
                   <div className="space-y-6 animate-fade-in">
                       {/* Offer Section */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.offer.title}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.tracker.offer.desc} <a href="#" className="text-pwa-green hover:underline">{t.tracker.offer.here}</a>.</p>
-                          
+                      <Section title={t.tracker.offer.title} desc={<>{t.tracker.offer.desc} <a href="#" className="text-pwa-green hover:underline">{t.tracker.offer.here}</a>.</>}>
                           <div className="mb-4">
-                              <input 
-                                type="text" 
+                              <Input 
                                 placeholder={t.tracker.offer.placeholder} 
-                                className="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:border-pwa-green transition-colors" 
                                 value={appData.offerLink || ''} 
-                                onChange={(e) => setAppData({...appData, offerLink: e.target.value})} 
+                                onChange={(e: any) => setAppData({...appData, offerLink: e.target.value})} 
                               />
                           </div>
 
@@ -1083,13 +1117,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.passGetParams ? 'translate-x-6' : ''}`}></div>
                               </div>
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Geo Cloaking */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.geo.title}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.tracker.geo.desc}</p>
-                          
+                      <Section title={t.tracker.geo.title} desc={t.tracker.geo.desc}>
                           <div className="space-y-3">
                               <label className="flex items-center gap-3 cursor-pointer">
                                   <input 
@@ -1112,13 +1143,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   <span className="text-sm text-gray-700">{t.tracker.geo.specific}</span>
                               </label>
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Device Cloaking */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.device.title}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.tracker.device.desc}</p>
-                          
+                      <Section title={t.tracker.device.title} desc={t.tracker.device.desc}>
                            <div className="flex items-center justify-between p-1">
                               <div>
                                   <div className="font-bold text-sm text-gray-800">{t.tracker.device.android}</div>
@@ -1131,13 +1159,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.androidOnly ? 'translate-x-6' : ''}`}></div>
                               </div>
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Whitepage */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.tracker.whitepage.title}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.tracker.whitepage.desc}</p>
-                          
+                      <Section title={t.tracker.whitepage.title} desc={t.tracker.whitepage.desc}>
                            <div className="flex items-center justify-between p-1">
                               <div>
                                   <div className="font-bold text-sm text-gray-800">{t.tracker.whitepage.enable}</div>
@@ -1150,36 +1175,39 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.enableWhitepage ? 'translate-x-6' : ''}`}></div>
                               </div>
                           </div>
-                      </div>
+                      </Section>
                   </div>
               )}
               
               {/* Design Tab Content */}
               {activeTab === 'design' && (
                   <div className="space-y-6 animate-fade-in">
-                      {/* Copy vs Manual */}
-                      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
-                          <button className="flex-1 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-bold text-gray-500 hover:border-gray-400 hover:bg-gray-50 transition-all flex flex-col items-center gap-2">
-                              <Copy size={20} />
+                      {/* Copy vs Manual Toggle */}
+                      <div className="flex p-1 bg-gray-100 rounded-xl">
+                          <button 
+                            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${designMode === 'copy' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            onClick={() => setDesignMode('copy')}
+                          >
+                              <Copy size={16} />
                               {t.design.copy}
                           </button>
-                          <button className="flex-1 py-3 border-2 border-gray-900 bg-gray-50 rounded-lg text-sm font-bold text-gray-900 flex flex-col items-center gap-2">
-                              <Dices size={20} />
+                          <button 
+                            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${designMode === 'manual' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            onClick={() => setDesignMode('manual')}
+                          >
+                              <Dices size={16} />
                               {t.design.manual}
                           </button>
                       </div>
 
                       {/* Language and Category */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative z-20">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.design.langCatTitle}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.design.langCatDesc}</p>
-                          
-                          <div className="flex gap-4">
+                      <Section title={t.design.langCatTitle} desc={t.design.langCatDesc}>
+                          <div className="flex gap-6">
                               <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{t.design.lang}</label>
+                                  <Label>{t.design.lang}</Label>
                                   <div className="relative" ref={langDropdownRef}>
                                       <div 
-                                        className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm flex items-center justify-between cursor-pointer"
+                                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-white text-sm flex items-center justify-between cursor-pointer focus:ring-2 focus:ring-gray-50 hover:border-gray-300 transition-all"
                                         onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
                                       >
                                           <span>{appData.language || 'English'}</span>
@@ -1213,10 +1241,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   </div>
                               </div>
                               <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{t.design.cat}</label>
+                                  <Label>{t.design.cat}</Label>
                                   <div className="relative">
                                       <select 
-                                          className="w-full border border-gray-200 rounded-lg px-4 py-3 bg-white text-sm focus:outline-none focus:border-pwa-green appearance-none cursor-pointer"
+                                          className="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-white text-sm focus:outline-none focus:border-gray-900 appearance-none cursor-pointer hover:border-gray-300 transition-all"
                                           value={appData.category || ''}
                                           onChange={(e) => setAppData({...appData, category: e.target.value})}
                                       >
@@ -1226,63 +1254,65 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   </div>
                               </div>
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Header Info */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.design.installTitle}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.design.installSub}</p>
-
+                      <Section title={t.design.installTitle} desc={t.design.installSub}>
                           <div className="flex gap-6 mb-6">
                               <div className="flex flex-col gap-2">
-                                  <div className="w-24 h-24 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors relative group" onClick={handleAddIconClick}>
+                                  <div className="w-24 h-24 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-gray-400 transition-all relative group" onClick={handleAddIconClick}>
                                       {appData.iconUrl ? (
                                           <img src={appData.iconUrl} alt="icon" className="w-full h-full object-cover rounded-2xl" />
                                       ) : (
                                           <ImageIcon className="text-gray-400" />
                                       )}
-                                      <div className="absolute inset-0 bg-black/50 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                      <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                           <Upload className="text-white" size={24} />
                                       </div>
                                   </div>
-                                  <button onClick={handleAddIconClick} className="text-xs font-bold text-blue-600 hover:underline text-center">{t.design.upload}</button>
+                                  <button onClick={handleAddIconClick} className="text-xs font-bold text-gray-500 hover:text-gray-800 text-center transition-colors">{t.design.upload}</button>
                               </div>
                               <div className="flex-1 space-y-4">
-                                  <div>
-                                      <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.appName}</label>
-                                      <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.name} onChange={(e) => setAppData({...appData, name: e.target.value})} />
-                                  </div>
-                                  <div>
-                                      <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.dev}</label>
-                                      <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.developer} onChange={(e) => setAppData({...appData, developer: e.target.value})} />
-                                  </div>
+                                  <Input 
+                                    label={t.design.appName} 
+                                    value={appData.name} 
+                                    onChange={(e: any) => setAppData({...appData, name: e.target.value})} 
+                                  />
+                                  <Input 
+                                    label={t.design.dev} 
+                                    value={appData.developer} 
+                                    onChange={(e: any) => setAppData({...appData, developer: e.target.value})} 
+                                  />
                               </div>
                           </div>
 
                           <div className="flex gap-4">
-                              <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.size}</label>
-                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.size} onChange={(e) => setAppData({...appData, size: e.target.value})} />
-                              </div>
-                              <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.age}</label>
-                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.age} onChange={(e) => setAppData({...appData, age: e.target.value})} />
-                              </div>
-                              <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.downloads}</label>
-                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.downloads} onChange={(e) => setAppData({...appData, downloads: e.target.value})} />
-                              </div>
+                              <Input 
+                                label={t.design.size} 
+                                value={appData.size} 
+                                onChange={(e: any) => setAppData({...appData, size: e.target.value})} 
+                                className="flex-1"
+                              />
+                              <Input 
+                                label={t.design.age} 
+                                value={appData.age} 
+                                onChange={(e: any) => setAppData({...appData, age: e.target.value})} 
+                                className="flex-1"
+                              />
+                              <Input 
+                                label={t.design.downloads} 
+                                value={appData.downloads} 
+                                onChange={(e: any) => setAppData({...appData, downloads: e.target.value})} 
+                                className="flex-1"
+                              />
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Media */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.design.mediaTitle}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.design.mediaSub}</p>
-
+                      <Section title={t.design.mediaTitle} desc={t.design.mediaSub}>
                           <div className="grid grid-cols-4 gap-4 mb-4">
                                {appData.screenshots?.map((src: string, index: number) => (
-                                   <div key={index} className="relative aspect-[9/16] rounded-lg overflow-hidden group">
+                                   <div key={index} className="relative aspect-[9/16] rounded-lg overflow-hidden group shadow-sm">
                                        <img src={src} className="w-full h-full object-cover" />
                                        <button 
                                             onClick={() => handleRemoveScreenshot(index)}
@@ -1294,7 +1324,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                ))}
                                {(appData.screenshots?.length || 0) < 6 && (
                                    <div 
-                                        className="aspect-[9/16] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors"
+                                        className="aspect-[9/16] border-2 border-dashed border-gray-300 bg-gray-50 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 hover:border-gray-400 cursor-pointer transition-all"
                                         onClick={handleAddScreenshotClick}
                                    >
                                        <Plus size={24} className="mb-2" />
@@ -1305,55 +1335,49 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                           <div className="flex items-center gap-2 text-xs text-gray-400">
                               <Info size={14} /> {t.design.videoInfo}
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Description */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.design.descTitle}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.design.descSub}</p>
-
+                      <Section title={t.design.descTitle} desc={t.design.descSub}>
                           <div className="mb-6">
                               <div className="flex justify-between items-center mb-2">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase">{t.design.descLabel}</label>
+                                  <Label>{t.design.descLabel}</Label>
                                   <button className="flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded transition-colors">
                                       <Sparkles size={12} /> {t.design.genDesc}
                                   </button>
                               </div>
-                              <textarea 
-                                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-pwa-green min-h-[120px] resize-y"
+                              <TextArea 
                                 value={appData.description}
-                                onChange={(e) => setAppData({...appData, description: e.target.value})}
-                              ></textarea>
+                                onChange={(e: any) => setAppData({...appData, description: e.target.value})}
+                              />
                           </div>
 
                           <div>
                               <div className="flex justify-between items-center mb-2">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase">{t.design.tagsLabel}</label>
+                                  <Label>{t.design.tagsLabel}</Label>
                                   <button className="flex items-center gap-1 text-[10px] font-bold text-gray-500 hover:text-gray-700 bg-gray-100 px-2 py-1 rounded transition-colors">
                                       <Dices size={12} /> {t.design.randTags}
                                   </button>
                               </div>
                               <div className="flex flex-wrap gap-2 mb-2">
                                   {appData.tags?.map((tag: string) => (
-                                      <div key={tag} className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium group">
+                                      <div key={tag} className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium group border border-gray-200">
                                           {tag}
-                                          <button onClick={() => handleTagRemove(tag)} className="text-gray-400 hover:text-red-500 ml-1"><X size={12} /></button>
+                                          <button onClick={() => handleTagRemove(tag)} className="text-gray-400 hover:text-red-500 ml-1 transition-colors"><X size={12} /></button>
                                       </div>
                                   ))}
                                   <button 
                                     onClick={handleAddTag}
-                                    className="flex items-center gap-1 border border-dashed border-gray-300 text-gray-500 hover:text-gray-700 hover:border-gray-400 px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                                    className="flex items-center gap-1 border border-dashed border-gray-300 text-gray-500 hover:text-gray-700 hover:border-gray-400 px-3 py-1 rounded-full text-xs font-medium transition-all"
                                   >
                                       <Plus size={12} /> {t.design.addTags}
                                   </button>
                               </div>
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Ratings */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-6">{t.design.ratingsTitle}</h3>
-                          
+                      <Section title={t.design.ratingsTitle}>
                           <div className="flex gap-6 items-start">
                               <div className="w-32">
                                   <div className="text-5xl font-bold text-gray-900 mb-1">{appData.rating}</div>
@@ -1363,7 +1387,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   <div className="text-xs text-gray-400 font-bold">{appData.reviewsCount} Reviews</div>
                               </div>
                               
-                              <div className="flex-1 space-y-2">
+                              <div className="flex-1 space-y-2 pt-1">
                                   {[5,4,3,2,1].map((r, i) => (
                                       <div key={r} className="flex items-center gap-3">
                                           <span className="text-xs font-bold text-gray-400 w-2">{r}</span>
@@ -1379,82 +1403,94 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                             max="100" 
                                             value={appData.ratingDistribution?.[i] || 0}
                                             onChange={(e) => handleDistributionChange(i, Number(e.target.value))}
-                                            className="w-20"
+                                            className="w-20 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                                           />
                                       </div>
                                   ))}
                               </div>
                           </div>
                           
-                          <div className="flex gap-4 mt-6">
-                              <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.rating}</label>
-                                  <input type="number" step="0.1" max="5" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.rating} onChange={(e) => setAppData({...appData, rating: Number(e.target.value)})} />
-                              </div>
-                              <div className="flex-1">
-                                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">{t.design.reviewsCount}</label>
-                                  <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pwa-green" value={appData.reviewsCount} onChange={(e) => setAppData({...appData, reviewsCount: e.target.value})} />
-                              </div>
+                          <div className="flex gap-4 mt-8 pt-6 border-t border-gray-100">
+                              <Input 
+                                label={t.design.rating} 
+                                type="number" 
+                                step="0.1" 
+                                max="5" 
+                                value={appData.rating} 
+                                onChange={(e: any) => setAppData({...appData, rating: Number(e.target.value)})} 
+                                className="flex-1"
+                              />
+                              <Input 
+                                label={t.design.reviewsCount} 
+                                value={appData.reviewsCount} 
+                                onChange={(e: any) => setAppData({...appData, reviewsCount: e.target.value})} 
+                                className="flex-1"
+                              />
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Comments */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <div className="flex justify-between items-center mb-6">
-                              <h3 className="font-bold text-gray-800">{t.design.commentsTitle}</h3>
-                              <button onClick={handleAddComment} className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-black transition-colors">
-                                  <Plus size={14} /> {t.design.addComment}
-                              </button>
-                          </div>
+                      <Section title={t.design.commentsTitle} className="!p-0 overflow-hidden">
+                           <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                                <div className="flex items-center gap-3">
+                                    <h3 className="font-bold text-gray-800 text-sm uppercase tracking-wide">Список комментариев</h3>
+                                    <span className="bg-gray-200 text-gray-600 px-2 py-0.5 rounded text-xs font-bold">{appData.comments?.length || 0}</span>
+                                </div>
+                                <button onClick={handleAddComment} className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-black transition-colors shadow-sm">
+                                    <Plus size={14} /> {t.design.addComment}
+                                </button>
+                           </div>
 
-                           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl mb-6">
-                              <div>
-                                  <div className="font-bold text-sm text-gray-800">{t.design.keepDates}</div>
-                                  <div className="text-xs text-gray-400 mt-1">{t.design.keepDatesSub}</div>
-                              </div>
-                              <div 
-                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.keepReviewDatesCurrent ? 'bg-pwa-green' : 'bg-gray-200'}`} 
-                                onClick={() => setAppData({...appData, keepReviewDatesCurrent: !appData.keepReviewDatesCurrent})}
-                              >
-                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.keepReviewDatesCurrent ? 'translate-x-6' : ''}`}></div>
-                              </div>
-                          </div>
-
-                          <div className="space-y-4">
-                              {appData.comments?.map((comment: any) => (
-                                  <div key={comment.id} className="p-4 border border-gray-100 rounded-xl hover:border-gray-300 transition-colors bg-white group relative">
-                                      <div className="flex justify-between items-start mb-2">
-                                          <div className="flex items-center gap-3">
-                                               <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden">
-                                                   {comment.avatarUrl ? (
-                                                       <img src={comment.avatarUrl} className="w-full h-full object-cover" />
-                                                   ) : (
-                                                       <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user}`} className="w-full h-full" />
-                                                   )}
-                                               </div>
-                                               <div>
-                                                   <div className="text-sm font-bold text-gray-900">{comment.user}</div>
-                                                   <div className="text-xs text-gray-400">{comment.date}</div>
-                                               </div>
-                                          </div>
-                                          <div className="flex text-yellow-400 gap-0.5">
-                                              {[...Array(5)].map((_, i) => (
-                                                  <Star key={i} size={12} fill={i < comment.rating ? "currentColor" : "none"} className={i < comment.rating ? "" : "text-gray-200"} />
-                                              ))}
-                                          </div>
-                                      </div>
-                                      <p className="text-sm text-gray-600 line-clamp-2">{comment.text}</p>
-                                      
-                                      <button 
-                                        onClick={() => startEditingComment(comment)}
-                                        className="absolute top-4 right-4 p-2 bg-gray-100 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-gray-200 transition-all text-gray-600"
-                                      >
-                                          <Settings size={16} />
-                                      </button>
+                           <div className="p-6">
+                               <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl mb-6">
+                                  <div>
+                                      <div className="font-bold text-sm text-gray-800">{t.design.keepDates}</div>
+                                      <div className="text-xs text-gray-400 mt-1">{t.design.keepDatesSub}</div>
                                   </div>
-                              ))}
-                          </div>
-                      </div>
+                                  <div 
+                                    className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.keepReviewDatesCurrent ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                    onClick={() => setAppData({...appData, keepReviewDatesCurrent: !appData.keepReviewDatesCurrent})}
+                                  >
+                                      <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.keepReviewDatesCurrent ? 'translate-x-6' : ''}`}></div>
+                                  </div>
+                              </div>
+
+                              <div className="space-y-4">
+                                  {appData.comments?.map((comment: any) => (
+                                      <div key={comment.id} className="p-4 border border-gray-100 rounded-xl hover:border-gray-300 transition-colors bg-white group relative shadow-sm">
+                                          <div className="flex justify-between items-start mb-2">
+                                              <div className="flex items-center gap-3">
+                                                   <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                                                       {comment.avatarUrl ? (
+                                                           <img src={comment.avatarUrl} className="w-full h-full object-cover" />
+                                                       ) : (
+                                                           <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user}`} className="w-full h-full" />
+                                                       )}
+                                                   </div>
+                                                   <div>
+                                                       <div className="text-sm font-bold text-gray-900">{comment.user}</div>
+                                                       <div className="text-xs text-gray-400">{comment.date}</div>
+                                                   </div>
+                                              </div>
+                                              <div className="flex text-yellow-400 gap-0.5">
+                                                  {[...Array(5)].map((_, i) => (
+                                                      <Star key={i} size={12} fill={i < comment.rating ? "currentColor" : "none"} className={i < comment.rating ? "" : "text-gray-200"} />
+                                                  ))}
+                                              </div>
+                                          </div>
+                                          <p className="text-sm text-gray-600 line-clamp-2 pl-11">{comment.text}</p>
+                                          
+                                          <button 
+                                            onClick={() => startEditingComment(comment)}
+                                            className="absolute top-4 right-4 p-2 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-gray-200 transition-all text-gray-600"
+                                          >
+                                              <Settings size={16} />
+                                          </button>
+                                      </div>
+                                  ))}
+                              </div>
+                           </div>
+                      </Section>
                   </div>
               )}
 
@@ -1462,27 +1498,21 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
               {activeTab === 'analytics' && (
                   <div className="space-y-6 animate-fade-in">
                       {/* Incoming Postbacks */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.analytics.incoming.title}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.analytics.incoming.desc} <a href="#" className="text-pwa-green hover:underline">{t.analytics.incoming.here}</a>.</p>
-                          
+                      <Section title={t.analytics.incoming.title} desc={<>{t.analytics.incoming.desc} <a href="#" className="text-pwa-green hover:underline">{t.analytics.incoming.here}</a>.</>}>
                           <div className="space-y-4">
                               <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs text-gray-600 break-all">
-                                  <span className="text-gray-400 select-none block mb-1 text-[10px] font-sans font-bold uppercase">{t.analytics.incoming.reg}</span>
+                                  <Label>{t.analytics.incoming.reg}</Label>
                                   https://pwa.bot/api/postback?click_id={'{click_id}'}&event=reg
                               </div>
                               <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs text-gray-600 break-all">
-                                  <span className="text-gray-400 select-none block mb-1 text-[10px] font-sans font-bold uppercase">{t.analytics.incoming.dep}</span>
+                                  <Label>{t.analytics.incoming.dep}</Label>
                                   https://pwa.bot/api/postback?click_id={'{click_id}'}&event=dep&amount={'{amount}'}
                               </div>
                           </div>
-                      </div>
+                      </Section>
 
                       {/* Outgoing Postbacks */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">{t.analytics.outgoing.title}</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.analytics.outgoing.desc}</p>
-                          
+                      <Section title={t.analytics.outgoing.title} desc={t.analytics.outgoing.desc}>
                           <OutgoingPostbackInput 
                             label={t.analytics.outgoing.install} 
                             value={appData.postback_install} 
@@ -1518,13 +1548,10 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                             onChangeValue={(v: string) => setAppData({...appData, postback_dep: v})}
                             onChangeMethod={(v: string) => setAppData({...appData, postback_dep_method: v})}
                           />
-                      </div>
+                      </Section>
 
                       {/* Integrations */}
-                      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h3 className="font-bold text-gray-800 mb-1">Integrations</h3>
-                          <p className="text-sm text-gray-400 mb-6">{t.analytics.integrations.desc}</p>
-
+                      <Section title="Integrations" desc={t.analytics.integrations.desc}>
                           <div className="space-y-4">
                               {[
                                   { id: 'fb', label: t.analytics.integrations.fb, enabled: appData.pixel_fb_enabled, val: appData.pixel_fb_id },
@@ -1532,7 +1559,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                   { id: 'kwai', label: t.analytics.integrations.kwai, enabled: appData.pixel_kwai_enabled, val: appData.pixel_kwai_id },
                                   { id: 'snapchat', label: t.analytics.integrations.snapchat, enabled: appData.pixel_snapchat_enabled, val: appData.pixel_snapchat_id },
                               ].map((item: any) => (
-                                  <div key={item.id} className="border border-gray-200 rounded-xl p-4 transition-all bg-white hover:border-gray-300">
+                                  <div key={item.id} className="border border-gray-200 rounded-xl p-4 transition-all bg-white hover:border-gray-300 shadow-sm">
                                       <div className="flex items-center justify-between mb-3">
                                           <div className="font-bold text-sm text-gray-800">{item.label}</div>
                                           <div 
@@ -1543,75 +1570,71 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
                                           </div>
                                       </div>
                                       {item.enabled && (
-                                          <div className="animate-in fade-in slide-in-from-top-2">
-                                              <input 
-                                                type="text" 
+                                          <div className="animate-in fade-in slide-in-from-top-2 pt-2">
+                                              <Input 
                                                 placeholder="Pixel ID" 
                                                 value={item.val || ''}
-                                                onChange={(e) => setAppData({...appData, [`pixel_${item.id}_id`]: e.target.value})}
-                                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pwa-green" 
+                                                onChange={(e: any) => setAppData({...appData, [`pixel_${item.id}_id`]: e.target.value})}
                                               />
                                           </div>
                                       )}
                                   </div>
                               ))}
                           </div>
-                      </div>
+                      </Section>
                   </div>
               )}
 
               {/* Push Tab Content */}
               {activeTab === 'push' && (
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
-                      <h3 className="font-bold text-gray-800 mb-1">{t.push.title}</h3>
-                      <p className="text-sm text-gray-400 mb-6">{t.push.desc}</p>
-                      
-                       <div className="flex items-center justify-between p-1">
-                          <div>
-                              <div className="font-bold text-sm text-gray-800">{t.push.collect}</div>
-                              <div className="text-xs text-gray-400 mt-1">{t.push.collectSub}</div>
+                  <div className="space-y-6 animate-fade-in">
+                      <Section title={t.push.title} desc={t.push.desc}>
+                           <div className="flex items-center justify-between p-1 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.push.collect}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.push.collectSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.push_ask_permission ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, push_ask_permission: !appData.push_ask_permission})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.push_ask_permission ? 'translate-x-6' : ''}`}></div>
+                              </div>
                           </div>
-                          <div 
-                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.push_ask_permission ? 'bg-pwa-green' : 'bg-gray-200'}`} 
-                            onClick={() => setAppData({...appData, push_ask_permission: !appData.push_ask_permission})}
-                          >
-                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.push_ask_permission ? 'translate-x-6' : ''}`}></div>
-                          </div>
-                      </div>
+                      </Section>
                   </div>
               )}
 
               {/* Extra Tab Content */}
               {activeTab === 'extra' && (
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
-                      <h3 className="font-bold text-gray-800 mb-1">{t.extra.title}</h3>
-                      <p className="text-sm text-gray-400 mb-6">{t.extra.desc}</p>
-                      
-                       <div className="flex items-center justify-between p-1 mb-6 border-b border-gray-50 pb-6">
-                          <div>
-                              <div className="font-bold text-sm text-gray-800">{t.extra.richer}</div>
-                              <div className="text-xs text-gray-400 mt-1">{t.extra.richerSub}</div>
+                  <div className="space-y-6 animate-fade-in">
+                      <Section title={t.extra.title} desc={t.extra.desc}>
+                           <div className="flex items-center justify-between p-1 mb-6 border-b border-gray-100 pb-6">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.extra.richer}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.extra.richerSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_richer_ui ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, extra_richer_ui: !appData.extra_richer_ui})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_richer_ui ? 'translate-x-6' : ''}`}></div>
+                              </div>
                           </div>
-                          <div 
-                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_richer_ui ? 'bg-pwa-green' : 'bg-gray-200'}`} 
-                            onClick={() => setAppData({...appData, extra_richer_ui: !appData.extra_richer_ui})}
-                          >
-                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_richer_ui ? 'translate-x-6' : ''}`}></div>
-                          </div>
-                      </div>
 
-                      <div className="flex items-center justify-between p-1">
-                          <div>
-                              <div className="font-bold text-sm text-gray-800">{t.extra.theme}</div>
-                              <div className="text-xs text-gray-400 mt-1">{t.extra.themeSub}</div>
+                          <div className="flex items-center justify-between p-1">
+                              <div>
+                                  <div className="font-bold text-sm text-gray-800">{t.extra.theme}</div>
+                                  <div className="text-xs text-gray-400 mt-1">{t.extra.themeSub}</div>
+                              </div>
+                              <div 
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_auto_theme ? 'bg-pwa-green' : 'bg-gray-200'}`} 
+                                onClick={() => setAppData({...appData, extra_auto_theme: !appData.extra_auto_theme})}
+                              >
+                                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_auto_theme ? 'translate-x-6' : ''}`}></div>
+                              </div>
                           </div>
-                          <div 
-                            className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors shrink-0 ${appData.extra_auto_theme ? 'bg-pwa-green' : 'bg-gray-200'}`} 
-                            onClick={() => setAppData({...appData, extra_auto_theme: !appData.extra_auto_theme})}
-                          >
-                              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${appData.extra_auto_theme ? 'translate-x-6' : ''}`}></div>
-                          </div>
-                      </div>
+                      </Section>
                   </div>
               )}
           </div>
@@ -1619,7 +1642,7 @@ export const Editor: React.FC<EditorProps> = ({ onBack, onSave, lang, initialDat
           {/* Sidebar / Preview Area */}
           <div className="w-full lg:w-80 flex flex-col gap-6">
               {/* Progress Checklist */}
-              <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
                   <h3 className="font-bold text-gray-800 mb-4">{t.design.process.title}</h3>
                   <ProgressItem label={t.design.process.domain} status={appData.domain ? "done" : "process"} />
                   <ProgressItem label={t.design.process.offer} status={appData.offerLink ? "done" : "none"} />
